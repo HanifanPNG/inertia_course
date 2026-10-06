@@ -13,7 +13,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
-import { formatCurrency } from '@/lib/format';
+import { formatAmount } from '@/lib/format';
 import { create, edit, index } from '@/routes/admin/products';
 
 export type ProductData = {
@@ -34,14 +34,16 @@ export default function ProductsIndex({
 }: {
     products: ProductData[];
 }) {
+    const hasImages = products.some((product) => product.image_url !== null);
+
     return (
         <>
             <Head title="Produk" />
 
             <h1 className="sr-only">Produk</h1>
 
-            <div className="space-y-6">
-                <div className="flex flex-wrap items-center justify-between gap-4">
+            <div>
+                <div className="flex flex-wrap items-start justify-between gap-4">
                     <Heading
                         title="Produk"
                         description="Kelola menu yang tersedia di kasir"
@@ -52,68 +54,86 @@ export default function ProductsIndex({
                     </Button>
                 </div>
 
+                <div aria-hidden="true" className="bon-rule mt-4 sm:mt-1" />
+
                 {products.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">
+                    <div className="mt-6 border border-border px-4 py-6 text-sm text-muted-foreground">
                         Belum ada produk.{' '}
                         <Link
                             href={create()}
-                            className="underline underline-offset-4"
+                            className="text-foreground underline underline-offset-4"
                         >
                             Tambahkan produk pertama
                         </Link>
                         .
-                    </p>
+                    </div>
                 ) : (
-                    <div className="overflow-x-auto rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                        <table className="w-full text-left text-sm">
-                            <thead className="border-b border-sidebar-border/70 text-xs text-muted-foreground dark:border-sidebar-border">
-                                <tr>
-                                    <th className="px-4 py-3 font-medium">
-                                        Gambar
-                                    </th>
-                                    <th className="px-4 py-3 font-medium">
+                    <div className="mt-6 overflow-x-auto border border-border">
+                        <table className="w-full min-w-[46rem] text-left text-sm">
+                            <thead className="border-b border-foreground/25">
+                                <tr className="font-data text-[10.5px] tracking-[0.2em] text-muted-foreground uppercase">
+                                    {hasImages && (
+                                        <th className="px-4 py-2.5 font-medium">
+                                            Gambar
+                                        </th>
+                                    )}
+                                    <th className="px-4 py-2.5 font-medium">
                                         Nama
                                     </th>
-                                    <th className="px-4 py-3 font-medium">
+                                    <th className="px-4 py-2.5 font-medium">
                                         Kategori
                                     </th>
-                                    <th className="px-4 py-3 font-medium">
-                                        Harga
+                                    <th className="px-4 py-2.5 text-right font-medium">
+                                        Harga (Rp)
                                     </th>
-                                    <th className="px-4 py-3 font-medium">
+                                    <th className="px-4 py-2.5 font-medium">
                                         Status
                                     </th>
-                                    <th className="px-4 py-3 text-right font-medium">
+                                    <th className="px-4 py-2.5 text-right font-medium">
                                         Aksi
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-sidebar-border/70 dark:divide-sidebar-border">
+                            <tbody>
                                 {products.map((product) => (
-                                    <tr key={product.id}>
-                                        <td className="px-4 py-3">
-                                            {product.image_url ? (
-                                                <img
-                                                    src={product.image_url}
-                                                    alt={product.name}
-                                                    className="h-12 w-12 rounded-lg border border-sidebar-border/70 object-cover dark:border-sidebar-border"
-                                                />
-                                            ) : (
-                                                <div className="h-12 w-12 rounded-lg border border-dashed border-sidebar-border/70 dark:border-sidebar-border" />
-                                            )}
-                                        </td>
+                                    <tr
+                                        key={product.id}
+                                        className="border-b border-border last:border-b-0"
+                                    >
+                                        {hasImages && (
+                                            <td className="px-4 py-3">
+                                                {product.image_url ? (
+                                                    <img
+                                                        src={product.image_url}
+                                                        alt={product.name}
+                                                        className="size-10 rounded-none border border-border object-cover"
+                                                    />
+                                                ) : (
+                                                    <div className="size-10 rounded-none border border-dashed border-border" />
+                                                )}
+                                            </td>
+                                        )}
                                         <td className="px-4 py-3 font-medium">
                                             {product.name}
                                         </td>
                                         <td className="px-4 py-3 text-muted-foreground">
                                             {product.category.name}
                                         </td>
-                                        <td className="px-4 py-3">
-                                            {formatCurrency(product.price)}
+                                        <td className="px-4 py-3 text-right font-data text-[13px] tabular-nums">
+                                            {formatAmount(product.price)}
                                         </td>
                                         <td className="px-4 py-3">
                                             {product.is_active ? (
-                                                <Badge>Aktif</Badge>
+                                                <Badge
+                                                    variant="outline"
+                                                    className="border-border"
+                                                >
+                                                    <span
+                                                        aria-hidden="true"
+                                                        className="mr-1.5 size-1.5 bg-primary"
+                                                    />
+                                                    Aktif
+                                                </Badge>
                                             ) : (
                                                 <Badge variant="secondary">
                                                     Nonaktif
@@ -156,7 +176,11 @@ function ProductDeleteDialog({ product }: { product: ProductData }) {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant="destructive" size="sm">
+                <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-destructive hover:bg-destructive/10"
+                >
                     Hapus
                     <span className="sr-only"> {product.name}</span>
                 </Button>

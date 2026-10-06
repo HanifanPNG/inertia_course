@@ -5,3 +5,9 @@ export function formatCurrency(value: string | number): string {
         minimumFractionDigits: 2,
     }).format(Number(value));
 }
+
+export function formatAmount(value: string | number): string {
+    return new Intl.NumberFormat('id-ID', {
+        minimumFractionDigits: 2,
+    }).format(Number(value));
+}

@@ -1,9 +1,15 @@
 import { Form, Head, Link } from '@inertiajs/react';
+import { Printer } from 'lucide-react';
 import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { formatCurrency } from '@/lib/format';
-import { create, index, show } from '@/routes/cashier/orders';
+import {
+    create,
+    index,
+    print as printStruk,
+    show,
+} from '@/routes/cashier/orders';
 
 export type OrderListItem = {
     id: number;
@@ -12,6 +18,7 @@ export type OrderListItem = {
     total_amount: string;
     status: string;
     items_count: number;
+    can_be_printed: boolean;
     user: {
         name: string;
     };
@@ -120,6 +127,9 @@ export default function OrdersIndex({
                                     <th className="px-4 py-3 font-medium">
                                         Status
                                     </th>
+                                    <th className="px-4 py-3 text-right font-medium">
+                                        Struk
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-sidebar-border/70 dark:divide-sidebar-border">
@@ -157,6 +167,26 @@ export default function OrdersIndex({
                                             >
                                                 {order.status}
                                             </Badge>
+                                        </td>
+                                        <td className="px-4 py-3 text-right">
+                                            {order.can_be_printed && (
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    asChild
+                                                >
+                                                    <a
+                                                        href={printStruk.url({
+                                                            order: order.id,
+                                                        })}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                    >
+                                                        <Printer className="mr-2 h-4 w-4" />
+                                                        Cetak
+                                                    </a>
+                                                </Button>
+                                            )}
                                         </td>
                                     </tr>
                                 ))}

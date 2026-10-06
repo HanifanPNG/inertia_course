@@ -1,0 +1,168 @@
+{
+    "title": "Dunia visual untuk layar login",
+    "question": "Roll menugaskan arah Buku Bon & Stempel. Simpan, ambil alternatif, atau re-roll.",
+    "options": [
+        {
+            "id": "assigned",
+            "label": "Buku Bon & Stempel",
+            "kicker": "THE ROLL",
+            "lineage": "buku bon karbon & buku kas restoran Indonesia",
+            "thesis": "Layar masuk adalah slip pertama shift: formulir di atas kertas akuntansi, distempel tanggal hari ini sebelum kerja dimulai.",
+            "palette": ["#F3EDE0", "#1C1A17", "#C2352B", "#2B4A8B"],
+            "materials": [
+                "kertas karbon",
+                "garis rambut bergaris",
+                "stempel karet",
+                "angka monospace tabular"
+            ],
+            "viewport": "Seluruh halaman jadi lembar bon; blok bergaris di tepi memuat identitas produk dan tanggal; formulir duduk sebagai slip bernomor urut, dan stempel merah mendarat sebagai satu-satunya momen.",
+            "risk": "Kertas akuntansi mudah berubah jadi kostum; kalau garisnya merembet ke atas kontrol, layar berhenti terbaca sebagai alat kerja.",
+            "raised": [
+                {
+                    "from": "vertical-video-feed",
+                    "raise": "Full-bleed ownership (dari vertical feed): lembar bon memenuhi viewport edge-to-edge, bukan kartu melayang di tengah."
+                },
+                {
+                    "from": "botanical-folio",
+                    "raise": "Registration (dari botanical folio): seluruh keluarga auth terkunci pada satu bingkai dan satu skala — hanya field yang berubah."
+                },
+                {
+                    "from": "orienteering-map",
+                    "raise": "Reserved ink (dari peta orientasi): satu merah berarti 'aktif/terkomit', tidak boleh dipinjam untuk hiasan."
+                },
+                {
+                    "from": "metro-tiles",
+                    "raise": "Committed field (diterjemahkan dari slab warna Metro ke kertas): ground adalah lembar bon itu sendiri, bukan putih dengan aksen."
+                },
+                {
+                    "from": "split-flap-concourse",
+                    "raise": "One earned moment (dari papan split-flap): pendaratan stempel tanggal adalah satu-satunya gerak terkoreografi di halaman."
+                }
+            ]
+        },
+        {
+            "id": "model-pick",
+            "label": "Bon Struk & Stempel LUNAS",
+            "kicker": "IMPECCABLE'S PICK",
+            "lineage": "rol struk termal + stempel LUNAS",
+            "thesis": "Layar sebagai gulungan struk tempat setiap transaksi berakhir: angka monospace, tepi sobek, dan stempel merah sebagai bukti.",
+            "palette": ["#FAFAF7", "#1A1A1A", "#C2352B", "#6E6E66"],
+            "materials": [
+                "kertas termal",
+                "perforasi sobek",
+                "monospace dot-matrix",
+                "stempel karet"
+            ],
+            "viewport": "Halaman sebagai pita struk; field login sebagai baris item dengan angka tabular; stempel menandai selesai.",
+            "risk": "Ini artefak literal produknya sendiri: ditulis terlalu hati-hati ia jadi gimmick, bukan layar kerja."
+        },
+        {
+            "id": "challenger-boardingpass",
+            "label": "Boarding Pass & Papan Gate",
+            "verdict": "competitive",
+            "lineage": "pas naik kapal terbang + papan keberangkatan",
+            "thesis": "Formulir sebagai dokumen perjalanan bersegmen: field berlabel seperti bagian pass, satu warna alert untuk perubahan.",
+            "palette": ["#ECECE8", "#16181A", "#E4572E", "#2B4A8B"],
+            "materials": [
+                "panel netral bersegmen",
+                "angka tabular",
+                "blok monospace"
+            ],
+            "viewport": "Panel login terbagi segmen berlabel (Kredensial / Sesi), nomor tabular di tepi, error menyala alert dan bertahan sampai terbaca.",
+            "case": "Menyatu bersih — login memang dokumen bersegmen dengan satu warna alert; kalah pada identifikasi audiens: perjalanan bukan vernakular harian kasir & owner.",
+            "risk": "Terbaca sebagai pastiche industri perjalanan kalau segmennya ditambah barcode dan stempel.",
+            "hero": "https://impeccable.style/worlds/cards/vernacular-ephemera-boarding-pass-and-gate-board-hero.webp",
+            "board": "https://impeccable.style/worlds/cards/vernacular-ephemera-boarding-pass-and-gate-board.webp"
+        },
+        {
+            "id": "challenger-verticalfeed",
+            "label": "Vertical Media Feed",
+            "verdict": "declined",
+            "lineage": "feed video vertikal satu-item",
+            "thesis": "Satu item memenuhi layar, rail glyph di kanan, item berikutnya sudah menunggu.",
+            "palette": ["#000000", "#FFFFFF"],
+            "materials": ["media full-bleed", "scrim bawah", "glyph tunggal"],
+            "viewport": "Satu bidang penuh dengan kontrol glyph menempel di tepi.",
+            "case": "Tidak ada feed, tidak ada engagement, dan tidak ada identifikasi audiens untuk layar tanda-masuk shift.",
+            "kept": "Full-bleed ownership — satu elemen berani memenuhi viewport.",
+            "hero": "https://impeccable.style/worlds/cards/pop-culture-shelf-vertical-video-feed-surface-hero.webp",
+            "board": "https://impeccable.style/worlds/cards/pop-culture-shelf-vertical-video-feed-surface.webp"
+        },
+        {
+            "id": "challenger-botanical",
+            "label": "Botanical Folio",
+            "verdict": "declined",
+            "lineage": "folio botani: pelat bertahap kehidupan",
+            "thesis": "Lima pelat krem pada skala identik, satu pohon dari benih sampai biji kering.",
+            "palette": ["#F3EAD8", "#2F4B2A", "#B3271E"],
+            "materials": ["pelat krem", "garis sepia rambut", "kapur tulis"],
+            "viewport": "Pelat berbaris pada baseline bersama dengan caption berjenjang.",
+            "case": "Urutan tahap kehidupan tanaman tidak punya pemetaan ke satu formulir login.",
+            "kept": "Registration — satu bingkai, satu skala untuk seluruh keluarga halaman.",
+            "hero": "https://impeccable.style/worlds/cards/editorial-sequence-montage-botanical-folio-season-hero.webp",
+            "board": "https://impeccable.style/worlds/cards/editorial-sequence-montage-botanical-folio-season.webp"
+        },
+        {
+            "id": "challenger-orienteering",
+            "label": "Peta Orienteering",
+            "verdict": "declined",
+            "lineage": "peta orientasi ISO + garis lintasan ungu",
+            "thesis": "Warna ikonik: putih = hutan larang, kontur = kebenaran, ungu = lintasan aktif di atas segalanya.",
+            "palette": ["#FFFFFF", "#C8A200", "#6D3FA0", "#3D5C2A"],
+            "materials": [
+                "tinta isometrik",
+                "kontur coklat",
+                "lingkaran kontrol"
+            ],
+            "viewport": "Terrain berwarna tetap di bawah, lintasan bernomor melintas di atas.",
+            "case": "Terrain dan lintasan tidak punya pekerjaan di layar tanda-masuk yang berfungsi.",
+            "kept": "Reserved ink — satu warna khusus untuk lapisan yang hidup.",
+            "hero": "https://impeccable.style/worlds/cards/notation-diagram-systems-orienteering-map-hero.webp",
+            "board": "https://impeccable.style/worlds/cards/notation-diagram-systems-orienteering-map.webp"
+        },
+        {
+            "id": "challenger-metro",
+            "label": "Metro Typographic Tiles",
+            "verdict": "declined",
+            "lineage": "tile datar + tipografi raksasa terpotong",
+            "thesis": "Tile warna datar, judul raksasa terpotong tepi kanvas, krom dihapus, tipografi jadi antarmuka.",
+            "palette": ["#000000", "#00B7C3", "#FF3B7B", "#FFFFFF"],
+            "materials": ["tile datar", "tanpa gradien", "type raksasa"],
+            "viewport": "Grid kotak ketat, satu kata besar terpotong, warna sebagai konten.",
+            "case": "Menghapus krom merusak keterbacaan formulir kerja; kesan audiensnya juga di bawah kertas bon yang benar-benar milik mereka.",
+            "kept": "Committed field — ground adalah bidang warna berskala halaman.",
+            "hero": "https://impeccable.style/worlds/cards/digital-design-canon-metro-typographic-tiles-hero.webp",
+            "board": "https://impeccable.style/worlds/cards/digital-design-canon-metro-typographic-tiles.webp"
+        },
+        {
+            "id": "challenger-splitflap",
+            "label": "Papan Split-Flap",
+            "verdict": "declined",
+            "lineage": "papan keberangkatan split-flap stasiun",
+            "thesis": "Huruf jatuh berderet di sel tetap: hitungan karakter demi karakter, kolom tak pernah bergeser.",
+            "palette": ["#0D0D0D", "#F2F2F2", "#E4A11B"],
+            "materials": [
+                "flap matte",
+                "huruf cat putih",
+                "sel karakter tetap"
+            ],
+            "viewport": "Baris berlabel pada grid bersih, satu lampu amber untuk status tertunda.",
+            "case": "Kaskade animasi bentrok dengan batas 'ringan + satu momen' dari brief; audience identification di bawah bon.",
+            "kept": "One earned moment — satu perubahan status yang ditahan sampai terbaca.",
+            "hero": "https://impeccable.style/worlds/cards/signals-instruments-split-flap-concourse-hero.webp",
+            "board": "https://impeccable.style/worlds/cards/signals-instruments-split-flap-concourse.webp"
+        }
+    ],
+    "reroll": { "registers": ["safer", "bolder"] },
+    "buildPath": { "value": "code" },
+    "canon": true,
+    "canonCard": {
+        "label": "Standar kategori",
+        "thesis": "Apa yang kategori ini kirimkan, dieksekusi dengan rapi.",
+        "palette": ["#FFFFFF", "#111827", "#2563EB"],
+        "materials": ["kartu putih", "gradien lembut", "input standar"],
+        "viewport": "Kartu di tengah layar, logo di atas, email + sandi, tombol biru Masuk.",
+        "risk": "Tidak dapat dibedakan dari login SaaS mana pun — memang begitu."
+    },
+    "steer": true
+}

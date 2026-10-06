@@ -12,6 +12,7 @@ use App\Models\Category;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
+use Illuminate\Contracts\View\View;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -58,6 +59,7 @@ class OrderController extends Controller
                     'total_amount' => $order->total_amount,
                     'status' => $order->status->value,
                     'items_count' => $order->order_items_count,
+                    'can_be_printed' => $order->payment()->exists(),
                     'user' => ['name' => $order->user->name],
                 ]),
             'filters' => [
@@ -173,17 +175,69 @@ class OrderController extends Controller
                 'can_be_completed' => $order->status === OrderStatus::Paid,
                 'can_be_edited' => $order->status === OrderStatus::Pending,
                 'can_be_deleted' => $order->status === OrderStatus::Pending,
+                'can_be_printed' => $order->payment()->exists(),
                 'user' => ['name' => $order->user->name],
-                'items' => $order->orderItems()
-                    ->get()
-                    ->map(fn ($item): array => [
-                        'quantity' => $item->quantity,
-                        'price' => $item->price,
-                        'subtotal' => $item->subtotal,
-                        'product_name' => $item->product_label,
-                    ]),
+                'items' => $this->receiptItems($order),
             ],
         ]);
+    }
+
+    /**
+     * Show the printable receipt of a paid order.
+     *
+     * The receipt is a standalone document: it renders as a plain page sized for
+     * a thermal printer and asks the browser to print itself, so it carries no
+     * application chrome. Orders without a payment have no receipt yet.
+     */
+    public function print(Request $request, Order $order): View
+    {
+        $order->load(['user:id,name', 'payment']);
+
+        abort_if(
+            $order->payment === null,
+            403,
+            'Pesanan ini belum dibayar sehingga struk belum dapat dicetak.',
+        );
+
+        $payment = $order->payment;
+
+        return view('cashier.orders.print', [
+            'storeName' => (string) config('app.name'),
+            'printedAt' => now()->format('d/m/Y H:i'),
+            'order' => [
+                'order_number' => $order->order_number,
+                'date' => $order->order_date->format('d/m/Y'),
+                'time' => $order->created_at->format('H:i'),
+                'cashier' => $order->user->name,
+                'client_name' => (string) $request->session()->get("client_names.{$order->id}", ''),
+                'items' => $this->receiptItems($order),
+                'total_amount' => (float) $order->total_amount,
+                'payment' => [
+                    'method' => $payment->method->label(),
+                    'amount' => (float) $payment->amount,
+                    'paid_at' => $payment->paid_at?->format('d/m/Y H:i'),
+                    'change' => round((float) $payment->amount - (float) $order->total_amount, 2),
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * The receipt lines of an order.
+     *
+     * @return array<int, array{quantity: int, price: string, subtotal: string, product_name: string}>
+     */
+    private function receiptItems(Order $order): array
+    {
+        return $order->orderItems()
+            ->get()
+            ->map(fn ($item): array => [
+                'quantity' => $item->quantity,
+                'price' => $item->price,
+                'subtotal' => $item->subtotal,
+                'product_name' => $item->product_label,
+            ])
+            ->all();
     }
 
     /**

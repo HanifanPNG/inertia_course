@@ -1,4 +1,5 @@
 import { Form, Head } from '@inertiajs/react';
+import PasskeyVerify from '@/components/passkey-verify';
 import InputError from '@/components/input-error';
 import PasswordInput from '@/components/password-input';
 import TextLink from '@/components/text-link';
@@ -10,19 +11,35 @@ import { Spinner } from '@/components/ui/spinner';
 import { register } from '@/routes';
 import { store } from '@/routes/login';
 import { request } from '@/routes/password';
-import PasskeyVerify from '@/components/passkey-verify';
 
 type Props = {
     status?: string;
     canResetPassword: boolean;
 };
 
+const fieldLabel =
+    'font-slip shrink-0 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground';
+const fieldInput = 'h-11 rounded-none bg-card px-3.5';
+const fieldNote = 'text-destructive! font-medium';
+const leader =
+    'mb-[3px] h-0 min-w-4 flex-1 border-b border-dotted border-[#c2b9a4]';
+
 export default function Login({ status, canResetPassword }: Props) {
     return (
         <>
-            <Head title="Log in" />
+            <Head title="Masuk" />
 
-            <PasskeyVerify />
+            <PasskeyVerify
+                label="Masuk dengan passkey"
+                loadingLabel="Memverifikasi passkey…"
+                separator="atau gunakan email"
+            />
+
+            {status && (
+                <p className="mb-1 font-data text-[13px] leading-snug text-[#2b4a8b]">
+                    {status}
+                </p>
+            )}
 
             <Form
                 {...store.form()}
@@ -31,9 +48,20 @@ export default function Login({ status, canResetPassword }: Props) {
             >
                 {({ processing, errors }) => (
                     <>
-                        <div className="grid gap-6">
+                        <div className="grid gap-5">
                             <div className="grid gap-2">
-                                <Label htmlFor="email">Email address</Label>
+                                <div className="flex items-baseline gap-3">
+                                    <Label
+                                        htmlFor="email"
+                                        className={fieldLabel}
+                                    >
+                                        Alamat email
+                                    </Label>
+                                    <span
+                                        aria-hidden="true"
+                                        className={leader}
+                                    />
+                                </div>
                                 <Input
                                     id="email"
                                     type="email"
@@ -42,21 +70,34 @@ export default function Login({ status, canResetPassword }: Props) {
                                     autoFocus
                                     tabIndex={1}
                                     autoComplete="email"
-                                    placeholder="email@example.com"
+                                    placeholder="nama@restoran.com"
+                                    className={fieldInput}
                                 />
-                                <InputError message={errors.email} />
+                                <InputError
+                                    message={errors.email}
+                                    className={fieldNote}
+                                />
                             </div>
 
                             <div className="grid gap-2">
-                                <div className="flex items-center">
-                                    <Label htmlFor="password">Password</Label>
+                                <div className="flex items-baseline gap-3">
+                                    <Label
+                                        htmlFor="password"
+                                        className={fieldLabel}
+                                    >
+                                        Kata sandi
+                                    </Label>
+                                    <span
+                                        aria-hidden="true"
+                                        className={leader}
+                                    />
                                     {canResetPassword && (
                                         <TextLink
                                             href={request()}
-                                            className="ml-auto text-sm"
                                             tabIndex={5}
+                                            className="shrink-0 text-[13px] font-normal text-muted-foreground decoration-muted-foreground/40 hover:text-primary"
                                         >
-                                            Forgot your password?
+                                            Lupa kata sandi?
                                         </TextLink>
                                     )}
                                 </div>
@@ -66,52 +107,66 @@ export default function Login({ status, canResetPassword }: Props) {
                                     required
                                     tabIndex={2}
                                     autoComplete="current-password"
-                                    placeholder="Password"
+                                    placeholder="Kata sandi"
+                                    className={fieldInput}
                                 />
-                                <InputError message={errors.password} />
+                                <InputError
+                                    message={errors.password}
+                                    className={fieldNote}
+                                />
                             </div>
 
-                            <div className="flex items-center space-x-3">
+                            <div className="flex items-center gap-2.5">
                                 <Checkbox
                                     id="remember"
                                     name="remember"
                                     tabIndex={3}
                                 />
-                                <Label htmlFor="remember">Remember me</Label>
+                                <Label
+                                    htmlFor="remember"
+                                    className="text-[13px] font-medium text-foreground"
+                                >
+                                    Ingat saya
+                                </Label>
                             </div>
 
                             <Button
                                 type="submit"
-                                className="mt-4 w-full"
+                                className="mt-1 h-12 w-full rounded-none text-[13px] font-semibold tracking-[0.2em] uppercase shadow-none transition-colors active:translate-y-px"
                                 tabIndex={4}
                                 disabled={processing}
                                 data-test="login-button"
                             >
-                                {processing && <Spinner />}
-                                Log in
+                                {processing ? (
+                                    <>
+                                        <Spinner />
+                                        Memproses…
+                                    </>
+                                ) : (
+                                    'Masuk'
+                                )}
                             </Button>
                         </div>
 
-                        <div className="text-center text-sm text-muted-foreground">
-                            Don't have an account?{' '}
-                            <TextLink href={register()} tabIndex={5}>
-                                Sign up
+                        <div className="border-t border-border pt-5 text-center text-[13px] text-muted-foreground">
+                            Belum punya akun?{' '}
+                            <TextLink
+                                href={register()}
+                                tabIndex={5}
+                                className="font-medium text-foreground decoration-foreground/40"
+                            >
+                                Daftar
                             </TextLink>
                         </div>
                     </>
                 )}
             </Form>
-
-            {status && (
-                <div className="mb-4 text-center text-sm font-medium text-green-600">
-                    {status}
-                </div>
-            )}
         </>
     );
 }
 
 Login.layout = {
-    title: 'Log in to your account',
-    description: 'Enter your email and password below to log in',
+    title: 'Masuk ke akun Anda',
+    description:
+        'Masukkan email dan kata sandi Anda untuk melanjutkan pekerjaan hari ini.',
 };

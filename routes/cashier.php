@@ -17,6 +17,8 @@ Route::middleware(['auth', 'verified', 'role:cashier'])->group(function () {
         ->name('cashier.orders.checkout');
     Route::get('cashier/orders/{order}', [OrderController::class, 'show'])
         ->name('cashier.orders.show');
+    Route::get('cashier/orders/{order}/print', [OrderController::class, 'print'])
+        ->name('cashier.orders.print');
     Route::get('cashier/orders/{order}/edit', [OrderController::class, 'edit'])
         ->name('cashier.orders.edit');
     Route::put('cashier/orders/{order}', [OrderController::class, 'update'])

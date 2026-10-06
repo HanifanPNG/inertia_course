@@ -1,4 +1,5 @@
-import { Form, Head, Link } from '@inertiajs/react';
+import { Form, Head, Link, usePage } from '@inertiajs/react';
+import { Printer } from 'lucide-react';
 import OrderController from '@/actions/App/Http/Controllers/Cashier/OrderController';
 import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';
@@ -14,7 +15,7 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog';
 import { formatCurrency } from '@/lib/format';
-import { edit, index } from '@/routes/cashier/orders';
+import { edit, index, print as printStruk } from '@/routes/cashier/orders';
 
 export type OrderDetail = {
     id: number;
@@ -27,6 +28,7 @@ export type OrderDetail = {
     can_be_completed: boolean;
     can_be_edited: boolean;
     can_be_deleted: boolean;
+    can_be_printed: boolean;
     user: { name: string };
     items: {
         quantity: number;
@@ -43,6 +45,8 @@ const statusVariant: Record<string, 'default' | 'secondary' | 'outline'> = {
 };
 
 export default function OrderShow({ order }: { order: OrderDetail }) {
+    const { name } = usePage().props as { name: string };
+
     return (
         <>
             <Head title={`Pesanan #${order.order_number}`} />
@@ -75,6 +79,21 @@ export default function OrderShow({ order }: { order: OrderDetail }) {
                             <OrderDeleteDialog order={order} />
                         )}
 
+                        {order.can_be_printed && (
+                            <Button asChild>
+                                <a
+                                    href={printStruk.url({
+                                        order: order.id,
+                                    })}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    <Printer className="mr-2 h-4 w-4" />
+                                    Cetak Struk
+                                </a>
+                            </Button>
+                        )}
+
                         <Button variant="outline" asChild>
                             <Link href={index()}>Kembali</Link>
                         </Button>
@@ -83,9 +102,7 @@ export default function OrderShow({ order }: { order: OrderDetail }) {
 
                 <div className="max-w-xl rounded-xl border border-sidebar-border/70 p-6 dark:border-sidebar-border">
                     <div className="space-y-1 text-center">
-                        <p className="text-sm font-medium uppercase">
-                            Nama Cafe
-                        </p>
+                        <p className="text-sm font-medium uppercase">{name}</p>
                         <p className="text-xs text-muted-foreground">
                             Struk transaksi
                         </p>

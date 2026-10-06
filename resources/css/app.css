@@ -13,6 +13,9 @@
         'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
         'Noto Color Emoji';
 
+    --font-slip: 'Archivo', ui-sans-serif, system-ui, sans-serif;
+    --font-data: 'Courier Prime', ui-monospace, SFMono-Regular, monospace;
+
     --radius-lg: var(--radius);
     --radius-md: calc(var(--radius) - 2px);
     --radius-sm: calc(var(--radius) - 4px);
@@ -130,6 +133,137 @@
     --sidebar-accent-foreground: oklch(0.985 0 0);
     --sidebar-border: oklch(0.269 0 0);
     --sidebar-ring: oklch(0.439 0 0);
+}
+
+.bon-world {
+    --background: #f3ede0;
+    --foreground: #1c1a17;
+    --card: #fbf8f1;
+    --card-foreground: #1c1a17;
+    --popover: #fbf8f1;
+    --popover-foreground: #1c1a17;
+    --primary: #c2352b;
+    --primary-foreground: #fffdf8;
+    --secondary: #e9e1d0;
+    --secondary-foreground: #1c1a17;
+    --muted: #ece5d6;
+    --muted-foreground: #5b5449;
+    --accent: #e9e1d0;
+    --accent-foreground: #1c1a17;
+    --destructive: #a5271f;
+    --destructive-foreground: #fffdf8;
+    --border: #d5cbb6;
+    --input: #c9bfa9;
+    --ring: #c2352b;
+    --radius: 4px;
+    --data: #2b4a8b;
+    --font-mono: 'Courier Prime', ui-monospace, SFMono-Regular, monospace;
+
+    --sidebar: #1c1a17;
+    --sidebar-foreground: #f3ede0;
+    --sidebar-primary: #c2352b;
+    --sidebar-primary-foreground: #fffdf8;
+    --sidebar-accent: #2b2823;
+    --sidebar-accent-foreground: #f3ede0;
+    --sidebar-border: #35312a;
+    --sidebar-ring: #c2352b;
+
+    --color-background: #f3ede0;
+    --color-foreground: #1c1a17;
+    --color-card: #fbf8f1;
+    --color-card-foreground: #1c1a17;
+    --color-popover: #fbf8f1;
+    --color-popover-foreground: #1c1a17;
+    --color-primary: #c2352b;
+    --color-primary-foreground: #fffdf8;
+    --color-secondary: #e9e1d0;
+    --color-secondary-foreground: #1c1a17;
+    --color-muted: #ece5d6;
+    --color-muted-foreground: #5b5449;
+    --color-accent: #e9e1d0;
+    --color-accent-foreground: #1c1a17;
+    --color-destructive: #a5271f;
+    --color-destructive-foreground: #fffdf8;
+    --color-border: #d5cbb6;
+    --color-input: #c9bfa9;
+    --color-ring: #c2352b;
+    --color-data: #2b4a8b;
+
+    --color-sidebar: #1c1a17;
+    --color-sidebar-foreground: #f3ede0;
+    --color-sidebar-primary: #c2352b;
+    --color-sidebar-primary-foreground: #fffdf8;
+    --color-sidebar-accent: #2b2823;
+    --color-sidebar-accent-foreground: #f3ede0;
+    --color-sidebar-border: #35312a;
+    --color-sidebar-ring: #c2352b;
+
+    background-color: var(--background);
+    background-image: repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 31px,
+        rgba(28, 26, 23, 0.032) 31px,
+        rgba(28, 26, 23, 0.032) 32px
+    );
+    color: var(--foreground);
+    caret-color: var(--primary);
+    scrollbar-color: #c9bfa9 #f3ede0;
+}
+
+.bon-world ::selection {
+    background-color: rgba(194, 53, 43, 0.22);
+    color: var(--foreground);
+}
+
+.bon-world :focus-visible {
+    outline-color: var(--primary);
+}
+
+.bon-world [data-slot='sidebar-inset'] {
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.bon-world [data-slot='sidebar-menu-button'][data-active='true'] {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+}
+
+.bon-rule {
+    height: 6px;
+    background: linear-gradient(
+        to bottom,
+        rgb(28 26 23 / 0.85) 0 2px,
+        transparent 2px 5px,
+        rgb(28 26 23 / 0.3) 5px 6px
+    );
+}
+
+@keyframes bon-stamp-land {
+    from {
+        opacity: 0;
+        transform: rotate(-15deg) scale(1.4);
+        filter: blur(2px);
+    }
+
+    to {
+        opacity: 1;
+        transform: rotate(-7deg) scale(1);
+        filter: blur(0);
+    }
+}
+
+.bon-stamp {
+    transform: rotate(-7deg);
+    animation: bon-stamp-land 420ms cubic-bezier(0.16, 1, 0.3, 1) 80ms both;
+    will-change: transform, opacity, filter;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bon-stamp {
+        animation: none;
+    }
 }
 
 @layer base {

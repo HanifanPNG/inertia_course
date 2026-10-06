@@ -16,6 +16,12 @@ export default defineConfig({
                 bunny('Instrument Sans', {
                     weights: [400, 500, 600],
                 }),
+                bunny('Archivo', {
+                    weights: [400, 500, 600, 700],
+                }),
+                bunny('Courier Prime', {
+                    weights: [400, 700],
+                }),
             ],
         }),
         inertia(),

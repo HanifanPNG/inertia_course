@@ -1,18 +1,14 @@
 import { Head, router } from '@inertiajs/react';
-import { Download, Trophy } from 'lucide-react';
+import { Download } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import Heading from '@/components/heading';
+import { LedgerStats } from '@/components/ledger-stats';
+import type { LedgerStat } from '@/components/ledger-stats';
 import { Button } from '@/components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
-import { formatCurrency } from '@/lib/format';
+import { formatAmount, formatCurrency } from '@/lib/format';
 import { dashboard } from '@/routes/admin';
 import { exportMethod, index as reports } from '@/routes/admin/reports';
+import { cn } from '@/lib/utils';
 
 export type ReportFilters = {
     period: 'daily' | 'monthly';
@@ -38,11 +34,11 @@ export type ReportSummary = {
     payments: Array<{ method: string; label: string; amount: string }>;
 };
 
-const stats = (summary: ReportSummary) => [
-    { title: 'Pendapatan', value: formatCurrency(summary.revenue) },
-    { title: 'Transaksi', value: String(summary.transactions) },
-    { title: 'Pesanan Dibayar', value: String(summary.paid_orders) },
-    { title: 'Item Terjual', value: String(summary.items_sold) },
+const stats = (summary: ReportSummary): LedgerStat[] => [
+    { label: 'Pendapatan', value: formatCurrency(summary.revenue) },
+    { label: 'Transaksi', value: String(summary.transactions) },
+    { label: 'Item Terjual', value: String(summary.items_sold) },
+    { label: 'Pesanan Dibayar', value: String(summary.paid_orders) },
 ];
 
 export default function ReportIndex({
@@ -82,179 +78,179 @@ export default function ReportIndex({
 
             <h1 className="sr-only">Laporan Penjualan</h1>
 
-            <div className="mb-8 flex flex-wrap items-start justify-between gap-4">
-                <Heading
-                    title="Laporan Penjualan"
-                    description="Ringkasan transaksi berdasarkan periode"
-                />
+            <div>
+                <div className="flex flex-wrap items-start justify-between gap-4">
+                    <Heading
+                        title="Laporan Penjualan"
+                        description="Ringkasan transaksi berdasarkan periode"
+                    />
 
-                <Button asChild variant="outline">
-                    <a href={exportHref} download>
-                        <Download className="mr-2 h-4 w-4" />
-                        Export CSV
-                    </a>
-                </Button>
-            </div>
-
-            <div className="mb-6 flex flex-wrap items-end gap-3">
-                <div className="flex overflow-hidden rounded-md border">
-                    {(['daily', 'monthly'] as const).map((period) => (
-                        <button
-                            key={period}
-                            type="button"
-                            onClick={() =>
-                                goto({
-                                    period,
-                                    ...(period === 'daily'
-                                        ? { date: filters.date }
-                                        : { month: filters.month }),
-                                })
-                            }
-                            className={
-                                'px-4 py-2 text-sm font-medium ' +
-                                (filters.period === period
-                                    ? 'bg-primary text-primary-foreground'
-                                    : 'text-muted-foreground hover:bg-muted')
-                            }
-                        >
-                            {period === 'daily' ? 'Harian' : 'Bulanan'}
-                        </button>
-                    ))}
+                    <Button asChild variant="outline">
+                        <a href={exportHref} download>
+                            <Download className="mr-2 h-4 w-4" />
+                            Export CSV
+                        </a>
+                    </Button>
                 </div>
 
-                <label className="flex items-center gap-2 text-sm">
-                    <span className="text-muted-foreground">
-                        {filters.period === 'daily' ? 'Tanggal' : 'Bulan'}
-                    </span>
-                    <input
-                        type={filters.period === 'daily' ? 'date' : 'month'}
-                        value={filters.period === 'daily' ? date : month}
-                        onChange={(event) =>
-                            filters.period === 'daily'
-                                ? setDate(event.target.value)
-                                : setMonth(event.target.value)
-                        }
-                        onBlur={() =>
-                            goto({
-                                period: filters.period,
-                                ...(filters.period === 'daily'
-                                    ? { date }
-                                    : { month }),
-                            })
-                        }
-                        className="h-9 rounded-md border border-input bg-transparent px-2 text-sm"
-                    />
-                </label>
+                <div aria-hidden="true" className="bon-rule mt-4 sm:mt-1" />
 
-                <span className="text-sm text-muted-foreground">
-                    {filters.period === 'daily'
-                        ? `Tanggal ${filters.date}`
-                        : `Bulan ${filters.month}`}
-                </span>
-            </div>
-
-            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                {stats(report.summary).map((stat) => (
-                    <Card key={stat.title}>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">
-                                {stat.title}
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-semibold tabular-nums">
-                                {stat.value}
-                            </div>
-                        </CardContent>
-                    </Card>
-                ))}
-            </div>
-
-            <div className="mt-6 grid gap-4 lg:grid-cols-2">
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                            <Trophy className="h-4 w-4" />
-                            Menu Terlaris
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        {report.summary.best_seller ? (
-                            <p className="text-sm">
-                                <span className="font-medium">
-                                    {report.summary.best_seller.name}
-                                </span>{' '}
-                                <span className="text-muted-foreground">
-                                    ({report.summary.best_seller.quantity}{' '}
-                                    porsi)
-                                </span>
-                            </p>
-                        ) : (
-                            <p className="text-sm text-muted-foreground">
-                                Belum ada penjualan.
-                            </p>
-                        )}
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Metode Pembayaran</CardTitle>
-                        <CardDescription>
-                            Total penerimaan per metode
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                        {report.summary.payments.map((payment) => (
-                            <div
-                                key={payment.method}
-                                className="flex items-center justify-between gap-4 text-sm"
+                <div className="mt-6 flex flex-wrap items-center gap-3">
+                    <div className="flex overflow-hidden border border-border">
+                        {(['daily', 'monthly'] as const).map((period) => (
+                            <button
+                                key={period}
+                                type="button"
+                                onClick={() =>
+                                    goto({
+                                        period,
+                                        ...(filters.period === 'daily'
+                                            ? { date: filters.date }
+                                            : { month: filters.month }),
+                                    })
+                                }
+                                aria-pressed={filters.period === period}
+                                className={cn(
+                                    'px-4 py-2 font-data text-[11px] tracking-[0.2em] uppercase transition-colors',
+                                    filters.period === period
+                                        ? 'bg-foreground text-background'
+                                        : 'text-muted-foreground hover:bg-muted',
+                                )}
                             >
-                                <span>{payment.label}</span>
-                                <span className="text-muted-foreground tabular-nums">
-                                    {formatCurrency(payment.amount)}
-                                </span>
-                            </div>
+                                {period === 'daily' ? 'Harian' : 'Bulanan'}
+                            </button>
                         ))}
-                    </CardContent>
-                </Card>
-            </div>
+                    </div>
 
-            <Card className="mt-6">
-                <CardHeader>
-                    <CardTitle>Rincian Harian</CardTitle>
-                    <CardDescription>
-                        {filters.period === 'daily'
-                            ? 'Detail transaksi pada tanggal terpilih'
-                            : 'Detail transaksi sepanjang bulan terpilih'}
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
+                    <label className="flex items-center gap-2 text-sm">
+                        <span className="font-data text-[11px] tracking-[0.2em] text-muted-foreground uppercase">
+                            {filters.period === 'daily' ? 'Tanggal' : 'Bulan'}
+                        </span>
+                        <input
+                            type={filters.period === 'daily' ? 'date' : 'month'}
+                            value={filters.period === 'daily' ? date : month}
+                            onChange={(event) =>
+                                filters.period === 'daily'
+                                    ? setDate(event.target.value)
+                                    : setMonth(event.target.value)
+                            }
+                            onBlur={() =>
+                                goto({
+                                    period: filters.period,
+                                    ...(filters.period === 'daily'
+                                        ? { date }
+                                        : { month }),
+                                })
+                            }
+                            className="h-9 rounded-none border border-input bg-card px-2 font-data text-[13px]"
+                        />
+                    </label>
+                </div>
+
+                <LedgerStats stats={stats(report.summary)} className="mt-6" />
+
+                <div className="mt-10 grid gap-8 lg:grid-cols-2">
+                    <section aria-labelledby="metode-pembayaran">
+                        <h2
+                            id="metode-pembayaran"
+                            className="font-data text-[11px] tracking-[0.24em] uppercase"
+                        >
+                            Metode Pembayaran
+                        </h2>
+
+                        <ul className="mt-3 border-t border-border">
+                            {report.summary.payments.map((payment) => (
+                                <li
+                                    key={payment.method}
+                                    className="flex items-baseline gap-3 border-b border-border py-2.5"
+                                >
+                                    <span className="text-sm">
+                                        {payment.label}
+                                    </span>
+                                    <span
+                                        aria-hidden="true"
+                                        className="mx-1 min-w-4 flex-1 translate-y-[-3px] border-b border-dotted border-border"
+                                    />
+                                    <span className="shrink-0 font-data text-sm text-foreground tabular-nums">
+                                        {formatCurrency(payment.amount)}
+                                    </span>
+                                </li>
+                            ))}
+                        </ul>
+                    </section>
+
+                    <section aria-labelledby="menu-terlaris">
+                        <h2
+                            id="menu-terlaris"
+                            className="font-data text-[11px] tracking-[0.24em] uppercase"
+                        >
+                            Menu Terlaris
+                        </h2>
+
+                        <div className="mt-3 border-y border-border py-2.5">
+                            {report.summary.best_seller ? (
+                                <div className="flex items-baseline gap-3">
+                                    <span className="text-sm font-medium">
+                                        {report.summary.best_seller.name}
+                                    </span>
+                                    <span
+                                        aria-hidden="true"
+                                        className="mx-1 min-w-4 flex-1 translate-y-[-3px] border-b border-dotted border-border"
+                                    />
+                                    <span className="shrink-0 font-data text-sm text-foreground tabular-nums">
+                                        {report.summary.best_seller.quantity}{' '}
+                                        porsi
+                                    </span>
+                                </div>
+                            ) : (
+                                <p className="text-sm text-muted-foreground">
+                                    Belum ada penjualan.
+                                </p>
+                            )}
+                        </div>
+                    </section>
+                </div>
+
+                <section aria-labelledby="rincian-harian" className="mt-10">
+                    <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                        <h2
+                            id="rincian-harian"
+                            className="font-data text-[11px] tracking-[0.24em] uppercase"
+                        >
+                            Rincian Harian
+                        </h2>
+                        <p className="text-xs text-muted-foreground">
+                            {filters.period === 'daily'
+                                ? 'Detail transaksi pada tanggal terpilih'
+                                : 'Detail transaksi sepanjang bulan terpilih'}
+                        </p>
+                    </div>
+
                     {report.rows.length === 0 ? (
-                        <p className="text-sm text-muted-foreground">
+                        <p className="mt-4 text-sm text-muted-foreground">
                             Tidak ada transaksi pada periode ini.
                         </p>
                     ) : (
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-sm">
+                        <div className="mt-3 overflow-x-auto">
+                            <table className="w-full min-w-[40rem] text-sm">
                                 <thead>
-                                    <tr className="border-b text-left text-muted-foreground">
-                                        <th className="py-2 pr-4 font-medium">
+                                    <tr className="border-y border-border text-left">
+                                        <th className="py-2 pr-4 font-data text-[10.5px] font-medium tracking-[0.2em] text-muted-foreground uppercase">
                                             Tanggal
                                         </th>
-                                        <th className="py-2 pr-4 font-medium">
+                                        <th className="py-2 pr-4 text-right font-data text-[10.5px] font-medium tracking-[0.2em] text-muted-foreground uppercase">
                                             Transaksi
                                         </th>
-                                        <th className="py-2 pr-4 font-medium">
+                                        <th className="py-2 pr-4 text-right font-data text-[10.5px] font-medium tracking-[0.2em] text-muted-foreground uppercase">
                                             Dibayar
                                         </th>
-                                        <th className="py-2 pr-4 font-medium">
-                                            Pendapatan
+                                        <th className="py-2 pr-4 text-right font-data text-[10.5px] font-medium tracking-[0.2em] text-muted-foreground uppercase">
+                                            Pendapatan (Rp)
                                         </th>
-                                        <th className="py-2 pr-4 font-medium">
+                                        <th className="py-2 pr-4 text-right font-data text-[10.5px] font-medium tracking-[0.2em] text-muted-foreground uppercase">
                                             Item
                                         </th>
-                                        <th className="py-2 font-medium">
+                                        <th className="py-2 font-data text-[10.5px] font-medium tracking-[0.2em] text-muted-foreground uppercase">
                                             Terlaris
                                         </th>
                                     </tr>
@@ -263,21 +259,21 @@ export default function ReportIndex({
                                     {report.rows.map((row) => (
                                         <tr
                                             key={row.date}
-                                            className="border-b last:border-0"
+                                            className="border-b border-border last:border-b-0"
                                         >
-                                            <td className="py-2 pr-4 tabular-nums">
+                                            <td className="py-2 pr-4 font-data text-[13px] tabular-nums">
                                                 {row.date}
                                             </td>
-                                            <td className="py-2 pr-4 tabular-nums">
+                                            <td className="py-2 pr-4 text-right font-data text-[13px] tabular-nums">
                                                 {row.transactions}
                                             </td>
-                                            <td className="py-2 pr-4 tabular-nums">
+                                            <td className="py-2 pr-4 text-right font-data text-[13px] tabular-nums">
                                                 {row.paid_orders}
                                             </td>
-                                            <td className="py-2 pr-4 tabular-nums">
-                                                {formatCurrency(row.revenue)}
+                                            <td className="py-2 pr-4 text-right font-data text-[13px] tabular-nums">
+                                                {formatAmount(row.revenue)}
                                             </td>
-                                            <td className="py-2 pr-4 tabular-nums">
+                                            <td className="py-2 pr-4 text-right font-data text-[13px] tabular-nums">
                                                 {row.items}
                                             </td>
                                             <td className="py-2">
@@ -289,8 +285,8 @@ export default function ReportIndex({
                             </table>
                         </div>
                     )}
-                </CardContent>
-            </Card>
+                </section>
+            </div>
         </>
     );
 }

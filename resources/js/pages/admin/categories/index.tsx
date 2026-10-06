@@ -32,8 +32,8 @@ export default function CategoriesIndex({
 
             <h1 className="sr-only">Kategori</h1>
 
-            <div className="space-y-6">
-                <div className="flex flex-wrap items-center justify-between gap-4">
+            <div>
+                <div className="flex flex-wrap items-start justify-between gap-4">
                     <Heading
                         title="Kategori"
                         description="Kelola kategori menu restoran"
@@ -44,46 +44,51 @@ export default function CategoriesIndex({
                     </Button>
                 </div>
 
+                <div aria-hidden="true" className="bon-rule mt-4 sm:mt-1" />
+
                 {categories.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">
+                    <div className="mt-6 border border-border px-4 py-6 text-sm text-muted-foreground">
                         Belum ada kategori.{' '}
                         <Link
                             href={create()}
-                            className="underline underline-offset-4"
+                            className="text-foreground underline underline-offset-4"
                         >
                             Tambahkan kategori pertama
                         </Link>
                         .
-                    </p>
+                    </div>
                 ) : (
-                    <div className="overflow-x-auto rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                        <table className="w-full text-left text-sm">
-                            <thead className="border-b border-sidebar-border/70 text-xs text-muted-foreground dark:border-sidebar-border">
-                                <tr>
-                                    <th className="px-4 py-3 font-medium">
+                    <div className="mt-6 overflow-x-auto border border-border">
+                        <table className="w-full min-w-[38rem] text-left text-sm">
+                            <thead className="border-b border-foreground/25">
+                                <tr className="font-data text-[10.5px] tracking-[0.2em] text-muted-foreground uppercase">
+                                    <th className="px-4 py-2.5 font-medium">
                                         Nama
                                     </th>
-                                    <th className="px-4 py-3 font-medium">
+                                    <th className="px-4 py-2.5 font-medium">
                                         Deskripsi
                                     </th>
-                                    <th className="px-4 py-3 font-medium">
+                                    <th className="px-4 py-2.5 text-right font-medium">
                                         Produk
                                     </th>
-                                    <th className="px-4 py-3 text-right font-medium">
+                                    <th className="px-4 py-2.5 text-right font-medium">
                                         Aksi
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-sidebar-border/70 dark:divide-sidebar-border">
+                            <tbody>
                                 {categories.map((category) => (
-                                    <tr key={category.id}>
+                                    <tr
+                                        key={category.id}
+                                        className="border-b border-border last:border-b-0"
+                                    >
                                         <td className="px-4 py-3 font-medium">
                                             {category.name}
                                         </td>
                                         <td className="px-4 py-3 text-muted-foreground">
                                             {category.description ?? '—'}
                                         </td>
-                                        <td className="px-4 py-3 text-muted-foreground">
+                                        <td className="px-4 py-3 text-right font-data text-[13px] tabular-nums">
                                             {category.products_count}
                                         </td>
                                         <td className="px-4 py-3">
@@ -126,9 +131,10 @@ function CategoryDeleteDialog({ category }: { category: CategoryData }) {
         <Dialog>
             <DialogTrigger asChild>
                 <Button
-                    variant="destructive"
+                    variant="outline"
                     size="sm"
                     disabled={hasProducts}
+                    className="text-destructive hover:bg-destructive/10"
                     title={
                         hasProducts
                             ? 'Kategori tidak dapat dihapus karena masih memiliki produk.'
