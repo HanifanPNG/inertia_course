@@ -60,19 +60,21 @@ export default function ReportIndex({
         setMonth(filters.month);
     }, [filters.date, filters.month]);
 
-    const goto = (params: Record<string, string>) =>
-        router.get(
-            reports(params),
-            {},
-            { preserveState: true, preserveScroll: true },
-        );
-
-    const exportHref = exportMethod({
+    const filterQuery = {
         period: filters.period,
         ...(filters.period === 'daily'
             ? { date: filters.date }
             : { month: filters.month }),
-    });
+    };
+
+    const goto = (params: Record<string, string>) =>
+        router.get(
+            reports.url({ query: params }),
+            {},
+            { preserveState: true, preserveScroll: true },
+        );
+
+    const exportHref = exportMethod.url({ query: filterQuery });
 
     return (
         <>

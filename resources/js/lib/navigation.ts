@@ -1,6 +1,7 @@
 import {
     BarChart3,
     LayoutDashboard,
+    Monitor,
     Package,
     Receipt,
     Tags,
@@ -11,6 +12,7 @@ import { index as categories } from '@/routes/admin/categories';
 import { index as products } from '@/routes/admin/products';
 import { dashboard as cashierDashboard } from '@/routes/cashier';
 import { index as orders } from '@/routes/cashier/orders';
+import { display as orderDisplay } from '@/routes/orders';
 import type { NavItem, UserRole } from '@/types';
 
 export function getNavItems(role?: UserRole): NavItem[] {
@@ -49,6 +51,12 @@ export function getNavItems(role?: UserRole): NavItem[] {
             icon: Receipt,
         });
     }
+
+    items.push({
+        title: 'Display',
+        href: orderDisplay(),
+        icon: Monitor,
+    });
 
     return items;
 }

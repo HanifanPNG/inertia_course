@@ -20,6 +20,8 @@ export type OrderDetail = {
     id: number;
     order_number: number;
     order_date: string;
+    time: string;
+    client_name: string;
     total_amount: string;
     status: string;
     can_be_completed: boolean;
@@ -101,6 +103,16 @@ export default function OrderShow({ order }: { order: OrderDetail }) {
                     <div className="flex items-center justify-between text-sm text-muted-foreground">
                         <span>Tanggal</span>
                         <span>{order.order_date}</span>
+                    </div>
+
+                    <div className="flex items-center justify-between text-sm text-muted-foreground">
+                        <span>Waktu</span>
+                        <span>{order.time} WIB</span>
+                    </div>
+
+                    <div className="flex items-center justify-between text-sm text-muted-foreground">
+                        <span>Pelanggan</span>
+                        <span>{order.client_name || '-'}</span>
                     </div>
 
                     <hr className="my-4 border-dashed border-sidebar-border dark:border-sidebar-border" />

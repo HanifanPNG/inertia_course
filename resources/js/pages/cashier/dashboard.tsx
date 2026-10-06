@@ -42,6 +42,7 @@ export default function CashierDashboard({
     const [lines, setLines] = useState<CartLine[]>([]);
     const [method, setMethod] = useState('cash');
     const [amountPaid, setAmountPaid] = useState('');
+    const [clientName, setClientName] = useState('');
 
     const addProduct = (product: MenuProduct) => {
         setLines((current) => {
@@ -88,11 +89,14 @@ export default function CashierDashboard({
     const change = paid - total;
     const isCash = method === 'cash';
     const cashIsEnough = isCash && amountPaid !== '' && change >= 0;
-    const canSubmit = lines.length > 0 && (isCash ? cashIsEnough : true);
+    const hasClientName = clientName.trim().length > 0;
+    const canSubmit =
+        lines.length > 0 && hasClientName && (isCash ? cashIsEnough : true);
 
     const resetCart = () => {
         setLines([]);
         setAmountPaid('');
+        setClientName('');
         setMethod('cash');
     };
 
@@ -179,6 +183,31 @@ export default function CashierDashboard({
                                         <div className="flex items-center justify-between border-t border-sidebar-border/70 pt-3 text-sm font-medium dark:border-sidebar-border">
                                             <span>Total</span>
                                             <span>{formatCurrency(total)}</span>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <Label htmlFor="client_name">
+                                                Nama Pelanggan
+                                            </Label>
+
+                                            <Input
+                                                id="client_name"
+                                                name="client_name"
+                                                value={clientName}
+                                                onChange={(event) =>
+                                                    setClientName(
+                                                        event.target.value,
+                                                    )
+                                                }
+                                                placeholder="Contoh: Budi"
+                                                autoComplete="off"
+                                            />
+
+                                            {errors.client_name && (
+                                                <p className="text-sm text-red-600 dark:text-red-400">
+                                                    {errors.client_name}
+                                                </p>
+                                            )}
                                         </div>
 
                                         <div className="space-y-2 rounded-lg border border-sidebar-border/70 p-3 dark:border-sidebar-border">

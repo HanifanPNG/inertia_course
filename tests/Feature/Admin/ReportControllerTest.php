@@ -114,5 +114,9 @@ test('the report can be exported as csv', function () {
         ->get(route('admin.reports.export', ['period' => 'daily', 'date' => '2026-10-02']))
         ->assertOk();
 
-    expect($response->streamedContent())->toContain('2026-10-02,1,70000.00');
+    $csv = $response->streamedContent();
+
+    expect($csv)
+        ->toContain('Tanggal,"Jumlah Transaksi","Total Pendapatan"')
+        ->toContain('2026-10-02,1,70000.00');
 });

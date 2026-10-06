@@ -45,6 +45,7 @@ test('a cash payment covers the total and completes the order', function () {
     $this->actingAs($this->cashier)
         ->post(route('cashier.orders.checkout'), [
             'items' => [['product_id' => $this->food->id, 'quantity' => 2]],
+            'client_name' => 'Budi',
             'payment_method' => 'cash',
             'amount_paid' => 50000,
         ])
@@ -63,6 +64,7 @@ test('an exact cash payment is accepted', function () {
     $this->actingAs($this->cashier)
         ->post(route('cashier.orders.checkout'), [
             'items' => [['product_id' => $this->food->id, 'quantity' => 1]],
+            'client_name' => 'Budi',
             'payment_method' => 'cash',
             'amount_paid' => 25000,
         ]);
@@ -74,6 +76,7 @@ test('cash below the total is rejected and nothing is stored', function () {
     $this->actingAs($this->cashier)
         ->post(route('cashier.orders.checkout'), [
             'items' => [['product_id' => $this->food->id, 'quantity' => 2]],
+            'client_name' => 'Budi',
             'payment_method' => 'cash',
             'amount_paid' => 10000,
         ])
@@ -88,6 +91,7 @@ test('a cash payment requires an amount', function () {
     $this->actingAs($this->cashier)
         ->post(route('cashier.orders.checkout'), [
             'items' => [['product_id' => $this->food->id, 'quantity' => 1]],
+            'client_name' => 'Budi',
             'payment_method' => 'cash',
         ])
         ->assertSessionHasErrors('amount_paid');
@@ -102,6 +106,7 @@ test('a qris payment is recorded as paid in full and completes the order', funct
                 ['product_id' => $this->food->id, 'quantity' => 1],
                 ['product_id' => $this->drink->id, 'quantity' => 1],
             ],
+            'client_name' => 'Budi',
             'payment_method' => 'qris',
         ]);
 
@@ -117,6 +122,7 @@ test('a debit payment is recorded as paid in full and completes the order', func
     $this->actingAs($this->cashier)
         ->post(route('cashier.orders.checkout'), [
             'items' => [['product_id' => $this->food->id, 'quantity' => 1]],
+            'client_name' => 'Budi',
             'payment_method' => 'debit',
         ]);
 
@@ -131,6 +137,7 @@ test('an invalid payment method is rejected', function () {
     $this->actingAs($this->cashier)
         ->post(route('cashier.orders.checkout'), [
             'items' => [['product_id' => $this->food->id, 'quantity' => 1]],
+            'client_name' => 'Budi',
             'payment_method' => 'bitcoin',
         ])
         ->assertSessionHasErrors('payment_method');
@@ -142,6 +149,7 @@ test('checkout requires at least one item', function () {
     $this->actingAs($this->cashier)
         ->post(route('cashier.orders.checkout'), [
             'items' => [],
+            'client_name' => 'Budi',
             'payment_method' => 'cash',
             'amount_paid' => 10000,
         ])
@@ -158,6 +166,7 @@ test('checkout rejects an inactive product', function () {
     $this->actingAs($this->cashier)
         ->post(route('cashier.orders.checkout'), [
             'items' => [['product_id' => $inactive->id, 'quantity' => 1]],
+            'client_name' => 'Budi',
             'payment_method' => 'cash',
             'amount_paid' => 100000,
         ])
@@ -173,6 +182,7 @@ test('the same product twice is merged and paid once', function () {
                 ['product_id' => $this->food->id, 'quantity' => 1],
                 ['product_id' => $this->food->id, 'quantity' => 2],
             ],
+            'client_name' => 'Budi',
             'payment_method' => 'cash',
             'amount_paid' => 75000,
         ]);
@@ -194,6 +204,7 @@ test('checkout assigns the next order number for the day', function () {
     $this->actingAs($this->cashier)
         ->post(route('cashier.orders.checkout'), [
             'items' => [['product_id' => $this->food->id, 'quantity' => 1]],
+            'client_name' => 'Budi',
             'payment_method' => 'qris',
         ]);
 
@@ -204,6 +215,7 @@ test('an admin cannot checkout', function () {
     $this->actingAs(User::factory()->admin()->create())
         ->post(route('cashier.orders.checkout'), [
             'items' => [['product_id' => $this->food->id, 'quantity' => 1]],
+            'client_name' => 'Budi',
             'payment_method' => 'qris',
         ])
         ->assertForbidden();
@@ -214,6 +226,7 @@ test('an admin cannot checkout', function () {
 test('a guest cannot checkout', function () {
     $this->post(route('cashier.orders.checkout'), [
         'items' => [['product_id' => $this->food->id, 'quantity' => 1]],
+        'client_name' => 'Budi',
         'payment_method' => 'qris',
     ])->assertRedirect(route('login'));
 
@@ -224,6 +237,7 @@ test('the paid order cannot be settled twice', function () {
     $this->actingAs($this->cashier)
         ->post(route('cashier.orders.checkout'), [
             'items' => [['product_id' => $this->food->id, 'quantity' => 1]],
+            'client_name' => 'Budi',
             'payment_method' => 'qris',
         ]);
 
@@ -231,4 +245,34 @@ test('the paid order cannot be settled twice', function () {
 
     expect(Payment::count())->toBe(1)
         ->and($order->status)->toBe(OrderStatus::Completed);
+});
+
+test('the checkout requires the client name', function () {
+    $this->actingAs($this->cashier)
+        ->post(route('cashier.orders.checkout'), [
+            'items' => [['product_id' => $this->food->id, 'quantity' => 1]],
+            'payment_method' => 'qris',
+        ])
+        ->assertSessionHasErrors('client_name');
+
+    expect(Order::count())->toBe(0);
+});
+
+test('the receipt shows the client name and the time', function () {
+    $this->actingAs($this->cashier)
+        ->post(route('cashier.orders.checkout'), [
+            'items' => [['product_id' => $this->food->id, 'quantity' => 1]],
+            'client_name' => 'Budi Santoso',
+            'payment_method' => 'qris',
+        ])
+        ->assertRedirect();
+
+    $order = Order::sole();
+
+    $this->get(route('cashier.orders.show', $order))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->component('cashier/orders/show')
+            ->where('order.client_name', 'Budi Santoso')
+            ->where('order.time', $order->created_at->format('H:i')));
 });

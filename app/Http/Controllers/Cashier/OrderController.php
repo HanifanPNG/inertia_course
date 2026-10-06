@@ -135,12 +135,25 @@ class OrderController extends Controller
 
         $this->settleOrder($order, $method, $amountPaid);
 
+        $this->rememberClientName($request, (int) $order->id, (string) $request->validated('client_name'));
+
         Inertia::flash('toast', [
             'type' => 'success',
             'message' => "Pesanan #{$order->order_number} sudah dibayar dan diselesaikan.",
         ]);
 
         return to_route('cashier.orders.show', $order);
+    }
+
+    /**
+     * Keep the client name for the receipt.
+     *
+     * The name is deliberately not persisted: it is only rendered on the
+     * receipt of the session that took the order, so no migration is needed.
+     */
+    private function rememberClientName(Request $request, int $orderId, string $clientName): void
+    {
+        $request->session()->put("client_names.{$orderId}", $clientName);
     }
 
     /**
@@ -153,6 +166,8 @@ class OrderController extends Controller
                 'id' => $order->id,
                 'order_number' => $order->order_number,
                 'order_date' => $order->order_date->toDateString(),
+                'time' => $order->created_at->format('H:i'),
+                'client_name' => (string) session()->get("client_names.{$order->id}", ''),
                 'total_amount' => $order->total_amount,
                 'status' => $order->status->value,
                 'can_be_completed' => $order->status === OrderStatus::Paid,

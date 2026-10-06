@@ -15,11 +15,15 @@ class CheckoutRequest extends FormRequest
      * `amount_paid` is only meaningful for cash; whether it covers the order
      * total is checked in the controller once the total is known.
      *
+     * `client_name` is only shown on the receipt; it is kept in the session
+     * rather than in a database column.
+     *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
+            'client_name' => ['required', 'string', 'max:100'],
             'items' => ['required', 'array', 'min:1'],
             'items.*.product_id' => [
                 'required',
@@ -43,6 +47,7 @@ class CheckoutRequest extends FormRequest
             'items.required' => 'Keranjang pesanan tidak boleh kosong.',
             'items.*.product_id.exists' => 'Produk yang dipilih tidak tersedia.',
             'payment_method.required' => 'Pilih metode pembayaran.',
+            'client_name.required' => 'Nama pelanggan wajib diisi.',
         ];
     }
 }
