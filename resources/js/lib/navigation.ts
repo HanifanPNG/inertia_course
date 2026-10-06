@@ -1,5 +1,12 @@
-import { LayoutDashboard, Package, Receipt, Tags } from 'lucide-react';
+import {
+    BarChart3,
+    LayoutDashboard,
+    Package,
+    Receipt,
+    Tags,
+} from 'lucide-react';
 import { dashboard as adminDashboard } from '@/routes/admin';
+import { index as reports } from '@/routes/admin/reports';
 import { index as categories } from '@/routes/admin/categories';
 import { index as products } from '@/routes/admin/products';
 import { dashboard as cashierDashboard } from '@/routes/cashier';
@@ -26,6 +33,11 @@ export function getNavItems(role?: UserRole): NavItem[] {
                 title: 'Produk',
                 href: products(),
                 icon: Package,
+            },
+            {
+                title: 'Laporan',
+                href: reports(),
+                icon: BarChart3,
             },
         );
     }

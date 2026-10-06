@@ -84,6 +84,20 @@ class Order extends Model
     }
 
     /**
+     * Scope a query to only include orders between two dates, inclusive.
+     *
+     * @param  Builder<Order>  $query
+     * @return Builder<Order>
+     */
+    #[Scope]
+    protected function betweenDates(Builder $query, CarbonInterface $from, CarbonInterface $to): Builder
+    {
+        return $query
+            ->whereDate('order_date', '>=', $from->toDateString())
+            ->whereDate('order_date', '<=', $to->toDateString());
+    }
+
+    /**
      * Get the cashier that created the order.
      *
      * @return BelongsTo<User, $this>
