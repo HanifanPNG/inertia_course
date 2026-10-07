@@ -210,7 +210,7 @@ export function PosCart({
                             Pembayaran
                         </span>
 
-                        <div className="grid grid-cols-3 gap-2">
+                        <div className="grid grid-cols-2 gap-2">
                             {paymentMethods.map((option) => (
                                 <button
                                     key={option.value}
@@ -308,13 +308,6 @@ export function PosCart({
                                     {formatAmount(total)}
                                 </p>
                             </div>
-                        )}
-
-                        {method === 'debit' && (
-                            <p className="border border-border p-2.5 text-xs text-muted-foreground">
-                                Proses kartu debit sebesar Rp{' '}
-                                {formatAmount(total)}, lalu tekan Selesaikan.
-                            </p>
                         )}
 
                         {paymentMethodError && (

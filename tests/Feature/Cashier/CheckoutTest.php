@@ -29,8 +29,9 @@ test('the cashier dashboard shows the menu and payment methods', function () {
         ->assertInertia(fn ($page) => $page
             ->component('cashier/dashboard')
             ->has('categories', 1)
-            ->has('paymentMethods', 3)
+            ->has('paymentMethods', 2)
             ->where('paymentMethods.0.value', 'cash')
+            ->where('paymentMethods.1.value', 'qris')
             ->where('qrisImageUrl', '/images/qris.png')
         );
 });
@@ -118,19 +119,16 @@ test('a qris payment is recorded as paid in full and completes the order', funct
         ->and($order->payment->amount)->toEqual('33000.00');
 });
 
-test('a debit payment is recorded as paid in full and completes the order', function () {
+test('debit is no longer an accepted payment method', function () {
     $this->actingAs($this->cashier)
         ->post(route('cashier.orders.checkout'), [
             'items' => [['product_id' => $this->food->id, 'quantity' => 1]],
             'client_name' => 'Budi',
             'payment_method' => 'debit',
-        ]);
+        ])
+        ->assertSessionHasErrors('payment_method');
 
-    $order = Order::sole();
-
-    expect($order->status)->toBe(OrderStatus::Completed)
-        ->and($order->payment->method)->toBe(PaymentMethod::Debit)
-        ->and($order->payment->amount)->toEqual('25000.00');
+    expect(Order::count())->toBe(0);
 });
 
 test('an invalid payment method is rejected', function () {

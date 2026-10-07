@@ -122,7 +122,7 @@ class OrderController extends Controller
      * point of sale. A successful payment moves the order straight to
      * `completed`: `pending → paid → completed`. For cash the `amount_paid`
      * must cover the total, otherwise the cashier is asked for a higher amount.
-     * QRIS and debit are recorded as paid in full.
+     * QRIS is recorded as paid in full.
      */
     public function checkout(CheckoutRequest $request): RedirectResponse
     {

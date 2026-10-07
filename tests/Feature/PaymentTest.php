@@ -36,13 +36,17 @@ test('the payment method is stored as an enum', function (PaymentMethod $method,
 })->with([
     'cash' => [PaymentMethod::Cash, 'Cash'],
     'qris' => [PaymentMethod::Qris, 'QRIS'],
-    'debit' => [PaymentMethod::Debit, 'Debit'],
 ]);
 
-test('an invalid payment method is rejected', function () {
-    expect(fn () => Payment::factory()->create(['method' => 'transfer']))
-        ->toThrow(ValueError::class);
+test('the shop only offers cash and qris', function () {
+    expect(array_column(PaymentMethod::cases(), 'value'))->toBe(['cash', 'qris'])
+        ->and(PaymentMethod::tryFrom('debit'))->toBeNull();
 });
+
+test('an invalid payment method is rejected', function (string $method) {
+    expect(fn () => Payment::factory()->create(['method' => $method]))
+        ->toThrow(ValueError::class);
+})->with(['transfer', 'debit']);
 
 test('paid at is cast to a datetime and may be null', function () {
     expect(Payment::factory()->create()->paid_at)->toBeInstanceOf(CarbonInterface::class)

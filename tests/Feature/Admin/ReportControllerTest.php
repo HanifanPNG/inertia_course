@@ -96,8 +96,7 @@ test('the report groups revenue by payment method', function () {
             ->where('report.summary.payments.0.amount', '10000.00')
             ->where('report.summary.payments.1.method', 'qris')
             ->where('report.summary.payments.1.amount', '20000.00')
-            ->where('report.summary.payments.2.method', 'debit')
-            ->where('report.summary.payments.2.amount', '0.00')
+            ->has('report.summary.payments', 2)
         );
 });
 

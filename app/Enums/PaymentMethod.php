@@ -6,7 +6,6 @@ enum PaymentMethod: string
 {
     case Cash = 'cash';
     case Qris = 'qris';
-    case Debit = 'debit';
 
     /**
      * Label yang ditampilkan ke user.
@@ -16,7 +15,6 @@ enum PaymentMethod: string
         return match ($this) {
             self::Cash => 'Cash',
             self::Qris => 'QRIS',
-            self::Debit => 'Debit',
         };
     }
 }
