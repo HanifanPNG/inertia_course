@@ -90,9 +90,6 @@ export default function MenuGrid({
                             }
                         >
                             {category.name}
-                            <span className="ml-2 tabular-nums opacity-60">
-                                {category.products.length}
-                            </span>
                         </button>
                     );
                 })}

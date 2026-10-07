@@ -1,6 +1,7 @@
 import { Head, router } from '@inertiajs/react';
 import { Download } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { DatePicker } from '@/components/date-picker';
 import Heading from '@/components/heading';
 import { LedgerStats } from '@/components/ledger-stats';
 import type { LedgerStat } from '@/components/ledger-stats';
@@ -95,56 +96,76 @@ export default function ReportIndex({
 
                 <div aria-hidden="true" className="bon-rule mt-4 sm:mt-1" />
 
-                <div className="mt-6 flex flex-wrap items-center gap-3">
-                    <div className="flex overflow-hidden border border-border">
-                        {(['daily', 'monthly'] as const).map((period) => (
-                            <button
-                                key={period}
-                                type="button"
-                                onClick={() =>
-                                    goto({
-                                        period,
-                                        ...(filters.period === 'daily'
-                                            ? { date: filters.date }
-                                            : { month: filters.month }),
-                                    })
-                                }
-                                aria-pressed={filters.period === period}
-                                className={cn(
-                                    'px-4 py-2 font-data text-[11px] tracking-[0.2em] uppercase transition-colors',
-                                    filters.period === period
-                                        ? 'bg-foreground text-background'
-                                        : 'text-muted-foreground hover:bg-muted',
-                                )}
-                            >
-                                {period === 'daily' ? 'Harian' : 'Bulanan'}
-                            </button>
-                        ))}
+                <div className="mt-6 space-y-3">
+                    <div className="flex flex-wrap items-end gap-3">
+                        <div className="flex overflow-hidden border border-border">
+                            {(['daily', 'monthly'] as const).map((period) => (
+                                <button
+                                    key={period}
+                                    type="button"
+                                    onClick={() =>
+                                        goto({
+                                            period,
+                                            ...(filters.period === 'daily'
+                                                ? { date: filters.date }
+                                                : { month: filters.month }),
+                                        })
+                                    }
+                                    aria-pressed={filters.period === period}
+                                    className={cn(
+                                        'px-4 py-2 font-data text-[11px] tracking-[0.2em] uppercase transition-colors',
+                                        filters.period === period
+                                            ? 'bg-foreground text-background'
+                                            : 'text-muted-foreground hover:bg-muted',
+                                    )}
+                                >
+                                    {period === 'daily' ? 'Harian' : 'Bulanan'}
+                                </button>
+                            ))}
+                        </div>
+
+                        <div className="grid gap-1.5">
+                            <span className="font-data text-[11px] tracking-[0.2em] text-muted-foreground uppercase">
+                                {filters.period === 'daily'
+                                    ? 'Tanggal'
+                                    : 'Bulan'}
+                            </span>
+
+                            {filters.period === 'daily' ? (
+                                <DatePicker
+                                    name="report_date"
+                                    id="report_date"
+                                    value={date}
+                                    onChange={(value) => {
+                                        setDate(value);
+                                        goto({ period: 'daily', date: value });
+                                    }}
+                                    ariaLabel="Pilih tanggal laporan"
+                                    className="w-56"
+                                />
+                            ) : (
+                                <DatePicker
+                                    name="report_month"
+                                    id="report_month"
+                                    mode="month"
+                                    value={month}
+                                    onChange={(value) => {
+                                        setMonth(value);
+                                        goto({
+                                            period: 'monthly',
+                                            month: value,
+                                        });
+                                    }}
+                                    ariaLabel="Pilih bulan laporan"
+                                    className="w-56"
+                                />
+                            )}
+                        </div>
                     </div>
 
-                    <label className="flex items-center gap-2 text-sm">
-                        <span className="font-data text-[11px] tracking-[0.2em] text-muted-foreground uppercase">
-                            {filters.period === 'daily' ? 'Tanggal' : 'Bulan'}
-                        </span>
-                        <input
-                            type={filters.period === 'daily' ? 'date' : 'month'}
-                            value={filters.period === 'daily' ? date : month}
-                            onChange={(event) =>
-                                filters.period === 'daily'
-                                    ? setDate(event.target.value)
-                                    : setMonth(event.target.value)
-                            }
-                            onBlur={() =>
-                                goto({
-                                    period: filters.period,
-                                    ...(filters.period === 'daily'
-                                        ? { date }
-                                        : { month }),
-                                })
-                            }
-                            className="h-9 rounded-none border border-input bg-card px-2 font-data text-[13px]"
-                        />
-                    </label>
+                    <p className="font-data text-[11px] tracking-[0.18em] text-muted-foreground uppercase">
+                        {periodSummary(report, filters)}
+                    </p>
                 </div>
 
                 <LedgerStats stats={stats(report.summary)} className="mt-6" />
@@ -303,3 +324,37 @@ ReportIndex.layout = {
         },
     ],
 };
+
+const MONTH_LABELS = [
+    'Januari',
+    'Februari',
+    'Maret',
+    'April',
+    'Mei',
+    'Juni',
+    'Juli',
+    'Agustus',
+    'September',
+    'Oktober',
+    'November',
+    'Desember',
+];
+
+function periodSummary(
+    report: { summary: ReportSummary },
+    filters: ReportFilters,
+): string {
+    const transactions = report.summary.transactions;
+    const revenue = `Rp ${formatAmount(report.summary.revenue)}`;
+    const paid = `${report.summary.paid_orders} pesanan dibayar`;
+
+    if (filters.period === 'daily') {
+        const [year, month, day] = filters.date.split('-');
+
+        return `${transactions} transaksi · ${revenue} pada ${day}/${month}/${year} · ${paid}`;
+    }
+
+    const [year, month] = filters.month.split('-');
+
+    return `${transactions} transaksi · ${revenue} sepanjang ${MONTH_LABELS[Number(month) - 1]} ${year} · ${paid}`;
+}

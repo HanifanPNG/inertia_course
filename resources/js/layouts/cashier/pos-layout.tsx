@@ -10,7 +10,6 @@ import { UserMenuContent } from '@/components/user-menu-content';
 import { useInitials } from '@/hooks/use-initials';
 import { dashboard as cashierDashboard } from '@/routes/cashier';
 import { index as orders } from '@/routes/cashier/orders';
-import { display as orderDisplay } from '@/routes/orders';
 import type { Auth } from '@/types';
 
 /**
@@ -46,7 +45,6 @@ export default function PosLayout({ children }: { children: React.ReactNode }) {
 
                 <nav className="flex items-center gap-1">
                     <PosNavLink href={orders().url}>Transaksi</PosNavLink>
-                    <PosNavLink href={orderDisplay().url}>Display</PosNavLink>
                 </nav>
 
                 <DropdownMenu>

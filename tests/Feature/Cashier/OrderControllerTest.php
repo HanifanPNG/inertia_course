@@ -189,6 +189,30 @@ test('the order list shows orders with their cashier', function () {
         );
 });
 
+test('the order list explains how many transactions the filter covers', function () {
+    $orders = Order::factory()->count(2)->create([
+        'user_id' => $this->cashier->id,
+    ]);
+
+    foreach ($orders as $order) {
+        $order->update(['total_amount' => 50000]);
+    }
+
+    $this->actingAs($this->cashier)
+        ->get(route('cashier.orders.index'))
+        ->assertInertia(fn (AssertableInertia $page) => $page
+            ->where('summary.transactions', 2)
+            ->where('summary.items', OrderItem::count())
+            ->where('summary.revenue', 100000)
+        );
+});
+
+test('the wall display page is gone', function () {
+    $this->actingAs($this->cashier)
+        ->get('/orders/display')
+        ->assertNotFound();
+});
+
 test('the order list rejects a malformed date filter', function () {
     Order::factory()->create(['user_id' => $this->cashier->id]);
 

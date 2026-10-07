@@ -34,11 +34,14 @@ test('an admin cannot access the cashier dashboard', function () {
         ->assertForbidden();
 });
 
-test('both roles can access the shared dashboard', function (string $factoryState) {
+test('the shared dashboard entry sends both roles to their own dashboard', function (string $factoryState, string $routeName) {
     $this->actingAs(User::factory()->{$factoryState}()->create())
         ->get(route('dashboard'))
-        ->assertOk();
-})->with(['admin', 'cashier']);
+        ->assertRedirect(route($routeName));
+})->with([
+    'admin' => ['admin', 'admin.dashboard'],
+    'cashier' => ['cashier', 'cashier.dashboard'],
+]);
 
 test('the middleware accepts any of the listed roles', function (User $user) {
     $middleware = new RoleMiddleware;

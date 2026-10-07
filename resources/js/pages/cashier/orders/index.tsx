@@ -1,5 +1,7 @@
 import { Form, Head, Link } from '@inertiajs/react';
 import { Printer } from 'lucide-react';
+import { useState } from 'react';
+import { DatePicker } from '@/components/date-picker';
 import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -11,6 +13,12 @@ import {
     print as printStruk,
     show,
 } from '@/routes/cashier/orders';
+
+export type OrderSummary = {
+    transactions: number;
+    items: number;
+    revenue: number;
+};
 
 export type OrderListItem = {
     id: number;
@@ -34,10 +42,16 @@ const statusVariant: Record<string, 'default' | 'secondary' | 'outline'> = {
 export default function OrdersIndex({
     orders,
     filters,
+    summary,
 }: {
     orders: OrderListItem[];
     filters: { order_date: string | null };
+    summary: OrderSummary;
 }) {
+    const [orderDate, setOrderDate] = useState<string | null>(
+        filters.order_date,
+    );
+
     return (
         <>
             <Head title="Transaksi" />
@@ -63,36 +77,42 @@ export default function OrdersIndex({
                     className="flex flex-wrap items-end gap-3"
                 >
                     {({ errors }) => (
-                        <>
-                            <div className="grid gap-2">
-                                <label
-                                    htmlFor="order_date"
-                                    className="text-sm font-medium"
-                                >
-                                    Tanggal
-                                </label>
+                        <div className="space-y-3">
+                            <div className="flex flex-wrap items-end gap-3">
+                                <div className="grid gap-1.5">
+                                    <span className="font-data text-[11px] tracking-[0.2em] text-muted-foreground uppercase">
+                                        Tanggal
+                                    </span>
 
-                                <input
-                                    id="order_date"
-                                    name="order_date"
-                                    type="date"
-                                    defaultValue={filters.order_date ?? ''}
-                                    className="h-9 rounded-none border border-input bg-card px-3 font-data text-[13px] outline-none focus-visible:border-primary"
-                                />
+                                    <DatePicker
+                                        name="order_date"
+                                        id="order_date"
+                                        value={orderDate}
+                                        onChange={setOrderDate}
+                                        ariaLabel="Pilih tanggal transaksi"
+                                        className="w-56"
+                                    />
+                                </div>
+
+                                <Button type="submit" variant="outline">
+                                    Terapkan
+                                </Button>
                             </div>
 
-                            <Button type="submit" variant="secondary">
-                                Filter
-                            </Button>
-
                             {errors.order_date && (
-                                <p className="text-sm text-red-600 dark:text-red-400">
+                                <p className="text-sm text-destructive">
                                     {errors.order_date}
                                 </p>
                             )}
-                        </>
+                        </div>
                     )}
                 </Form>
+
+                <p className="font-data text-[11px] tracking-[0.18em] text-muted-foreground uppercase">
+                    {filters.order_date
+                        ? `${summary.transactions} transaksi · ${summary.items} item · Rp ${formatAmount(summary.revenue)} pada ${formatDateLabel(filters.order_date)}`
+                        : `Semua tanggal: ${summary.transactions} transaksi · ${summary.items} item · Rp ${formatAmount(summary.revenue)}`}
+                </p>
 
                 {orders.length === 0 ? (
                     <p className="text-sm text-muted-foreground">
@@ -205,3 +225,9 @@ export default function OrdersIndex({
 }
 
 OrdersIndex.layout = (page: React.ReactNode) => <PosLayout>{page}</PosLayout>;
+
+function formatDateLabel(value: string): string {
+    const [year, month, day] = value.split('-');
+
+    return `${day}/${month}/${year}`;
+}

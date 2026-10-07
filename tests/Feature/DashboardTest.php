@@ -7,10 +7,11 @@ test('guests are redirected to the login page', function () {
     $response->assertRedirect(route('login'));
 });
 
-test('authenticated users can visit the dashboard', function () {
-    $user = User::factory()->create();
-    $this->actingAs($user);
-
-    $response = $this->get(route('dashboard'));
-    $response->assertOk();
-});
+test('the shared dashboard entry forwards each role to its own dashboard', function (string $factoryState, string $routeName) {
+    $this->actingAs(User::factory()->{$factoryState}()->create())
+        ->get(route('dashboard'))
+        ->assertRedirect(route($routeName));
+})->with([
+    'admin' => ['admin', 'admin.dashboard'],
+    'cashier' => ['cashier', 'cashier.dashboard'],
+]);

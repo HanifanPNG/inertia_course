@@ -44,14 +44,16 @@ class OrderController extends Controller
             ? Carbon::createFromFormat('Y-m-d', $filters['order_date'])
             : null;
 
+        $orders = Order::query()
+            ->with('user:id,name')
+            ->withCount('orderItems')
+            ->when($date, fn ($query) => $query->onDate($date))
+            ->latest('order_date')
+            ->latest('id')
+            ->get();
+
         return Inertia::render('cashier/orders/index', [
-            'orders' => Order::query()
-                ->with('user:id,name')
-                ->withCount('orderItems')
-                ->when($date, fn ($query) => $query->onDate($date))
-                ->latest('order_date')
-                ->latest('id')
-                ->get()
+            'orders' => $orders
                 ->map(fn (Order $order): array => [
                     'id' => $order->id,
                     'order_number' => $order->order_number,
@@ -64,6 +66,13 @@ class OrderController extends Controller
                 ]),
             'filters' => [
                 'order_date' => $date?->toDateString(),
+            ],
+            'summary' => [
+                'transactions' => $orders->count(),
+                'items' => $orders->sum('order_items_count'),
+                'revenue' => $orders->sum(
+                    fn (Order $order): float => (float) $order->total_amount
+                ),
             ],
         ]);
     }
