@@ -1,11 +1,11 @@
 import { useState, type ReactNode } from 'react';
 import { Form, Link } from '@inertiajs/react';
 import { ShoppingCart } from 'lucide-react';
-import MenuGrid, {
+import PolaroidMenu, {
     orderedCategories,
     type MenuCategory,
     type MenuProduct,
-} from '@/components/menu-grid';
+} from '@/components/polaroid-menu';
 import { Button } from '@/components/ui/button';
 import { formatCurrency } from '@/lib/format';
 import type { RouteFormDefinition } from '@/wayfinder';
@@ -84,7 +84,7 @@ export default function OrderCart({
         >
             {({ processing }) => (
                 <>
-                    <MenuGrid
+                    <PolaroidMenu
                         menu={menu}
                         activeCategoryId={categoryId}
                         onCategoryChange={setCategoryId}

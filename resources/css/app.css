@@ -277,6 +277,124 @@
     }
 }
 
+/*
+ * Prints drop onto the string once and then stay put: a card that never stops
+ * moving is a card that is hard to aim at, so the motion is an entrance, not a
+ * loop. Motion returns only when a hand is on the card, where a short wobble
+ * answers the touch instead of running away from it.
+ */
+/*
+ * Prints drop onto the string once and then stay put: a card that never stops
+ * moving is a card that is hard to aim at, so the motion is an entrance, not a
+ * loop. Motion returns only when a hand is on the card, where one short swing
+ * answers the touch instead of running away from it.
+ *
+ * The peg has to stay welded to the string, so the rotation lives on the anchor
+ * (`.bon-print`, whose transform-origin is exactly the peg) and only the frame
+ * inside it is lifted and dropped. Moving the anchor's children would take the
+ * peg off the string.
+ */
+@keyframes bon-print-drop {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes bon-print-drop-lift {
+    from {
+        opacity: 0;
+        transform: translateY(-16px) rotate(-2.5deg);
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes bon-print-sway {
+    0% {
+        transform: rotate(var(--bon-tilt, 0deg));
+    }
+
+    20% {
+        transform: rotate(calc(var(--bon-tilt, 0deg) - 4.2deg));
+    }
+
+    42% {
+        transform: rotate(calc(var(--bon-tilt, 0deg) + 2.8deg));
+    }
+
+    64% {
+        transform: rotate(calc(var(--bon-tilt, 0deg) - 1.9deg));
+    }
+
+    84% {
+        transform: rotate(calc(var(--bon-tilt, 0deg) + 0.9deg));
+    }
+
+    100% {
+        transform: rotate(var(--bon-tilt, 0deg));
+    }
+}
+
+@keyframes bon-print-sway-lift {
+    0%,
+    100% {
+        transform: translateY(0) scale(1);
+    }
+
+    20% {
+        transform: translateY(-5px) scale(1.02);
+    }
+
+    42% {
+        transform: translateY(-1px) scale(1.01);
+    }
+}
+
+.bon-print {
+    position: relative;
+    display: block;
+    transform: rotate(var(--bon-tilt, 0deg));
+    /* the anchor point is the peg itself, so a swing turns the print in place */
+    transform-origin: 50% 0;
+    animation: bon-print-drop 620ms cubic-bezier(0.22, 0.68, 0.24, 1)
+        var(--bon-delay, 0ms) both;
+}
+
+.bon-print-frame {
+    display: block;
+    animation: bon-print-drop-lift 620ms cubic-bezier(0.22, 0.68, 0.24, 1)
+        var(--bon-delay, 0ms) both;
+}
+
+/*
+ * The wobble is a class, not a `:hover` rule: dropping the rule the instant the
+ * pointer leaves snaps the card back mid-swing, which reads as a blink. The
+ * class is kept until the animation ends, so a print always finishes its swing
+ * and lands exactly on its resting angle.
+ */
+.bon-print.is-wobbling {
+    animation: bon-print-sway 1000ms cubic-bezier(0.42, 0, 0.58, 1) both;
+}
+
+.bon-print.is-wobbling .bon-print-frame {
+    animation: bon-print-sway-lift 1000ms cubic-bezier(0.42, 0, 0.58, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bon-print,
+    .bon-print-frame,
+    .bon-print.is-wobbling,
+    .bon-print.is-wobbling .bon-print-frame {
+        animation: none;
+    }
+}
+
 .bon-rule {
     height: 6px;
     background: linear-gradient(

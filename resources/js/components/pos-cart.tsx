@@ -1,5 +1,5 @@
 import { Minus, Plus, X } from 'lucide-react';
-import type { MenuProduct } from '@/components/menu-grid';
+import type { MenuProduct } from '@/components/polaroid-menu';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { formatAmount } from '@/lib/format';

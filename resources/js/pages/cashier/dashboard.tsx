@@ -1,11 +1,11 @@
 import { Form, Head } from '@inertiajs/react';
 import { useState } from 'react';
 import OrderController from '@/actions/App/Http/Controllers/Cashier/OrderController';
-import MenuGrid, {
+import PolaroidMenu, {
     orderedCategories,
     type MenuCategory,
     type MenuProduct,
-} from '@/components/menu-grid';
+} from '@/components/polaroid-menu';
 import {
     PosCart,
     type CartLine,
@@ -99,7 +99,7 @@ export default function CashierDashboard({
             >
                 {({ processing, errors }) => (
                     <>
-                        <MenuGrid
+                        <PolaroidMenu
                             menu={categories}
                             activeCategoryId={categoryId}
                             onCategoryChange={setCategoryId}
