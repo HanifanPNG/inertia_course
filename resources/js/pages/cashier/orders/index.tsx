@@ -136,13 +136,13 @@ export default function OrdersIndex({
                                     <th className="px-4 py-3 font-medium">
                                         Tanggal
                                     </th>
-                                    <th className="px-4 py-3 font-medium">
+                                    <th className="px-4 py-3 text-right font-medium">
                                         Item
                                     </th>
                                     <th className="px-4 py-3 font-medium">
                                         Kasir
                                     </th>
-                                    <th className="px-4 py-3 font-medium">
+                                    <th className="px-4 py-3 text-right font-medium">
                                         Total
                                     </th>
                                     <th className="px-4 py-3 font-medium">
@@ -153,7 +153,7 @@ export default function OrdersIndex({
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-sidebar-border/70 dark:divide-sidebar-border">
+                            <tbody>
                                 {orders.map((order) => (
                                     <tr
                                         key={order.id}
