@@ -38,8 +38,8 @@ Sederhana & cepat untuk kasir pemula: minim klik, dirancang untuk jam sibuk; ter
 
 ## Brand Commitments
 
-- Nama tampilan di layar auth **belum diputuskan** — user akan mengisinya sendiri; sementara didesain pakai placeholder yang mudah diganti. Jangan mengarang nama restoran/produk.
-- Tidak ada logo/aset brand yang dikunci; `APP_NAME` saat ini `pos-app`.
+- Nama toko sudah diputuskan: **"4U Resto & cafe"**, diambil dari `APP_NAME` (satu sumber kebenaran untuk struk, sidebar admin, bar kasir, dan letterhead login). Don't invent another name; don't hardcode the store name in a component.
+- Nama toko ditulis tangan dengan **Playwrite AR** (`--font-brand`, kelas `.bon-brand`): hanya untuk nama toko, tidak untuk angka, label, atau judul halaman. Tidak ada logo; mark merah di sidebar adalah bentuk, bukan logo brand.
 - Scope perubahan yang diizinkan: **form login + kerangka layout auth**; keluarga auth lain (register, forgot/reset password) akan mengikuti arah yang sama pada sesi lanjutan.
 
 ## Evidence on Hand
@@ -48,7 +48,7 @@ Sederhana & cepat untuk kasir pemula: minim klik, dirancang untuk jam sibuk; ter
 - Task master terisi T-01…T-16: `.agents/3-TASKS.md`.
 - Kode berjalan: halaman `resources/js/pages/auth/login.tsx`, layout `resources/js/layouts/auth/auth-simple-layout.tsx`.
 - Aset: `public/images/qris.png` (placeholder QRIS), `tests/Fixtures/product.png` (fixture gambar produk).
-- Absen yang tidak boleh dikarang: nama brand restoran, logo, testimoni pelanggan, harga, klaim komersial.
+- Absen yang tidak boleh dikarang: logo, testimoni pelanggan, harga, klaim komersial.
 
 ## Product Principles
 

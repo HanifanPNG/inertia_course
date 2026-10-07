@@ -22,6 +22,14 @@ export default defineConfig({
                 bunny('Courier Prime', {
                     weights: [400, 700],
                 }),
+                /*
+                 * The brand voice: a cursive school-handwriting face used only
+                 * for the store name. Thin and light, so it is never used for
+                 * amounts or interface text.
+                 */
+                bunny('Playwrite AR', {
+                    weights: [300, 400],
+                }),
             ],
         }),
         inertia(),

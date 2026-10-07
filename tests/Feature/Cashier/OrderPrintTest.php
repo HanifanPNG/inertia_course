@@ -90,6 +90,8 @@ test('a receipt renders the order as a printable document', function () {
     $response->assertOk()
         ->assertSee('size: 80mm auto')
         ->assertSee('window.print()')
+        ->assertSee(config('app.name'))
+        ->assertSee('Playwrite AR', false)
         ->assertSee('Nasi Goreng')
         ->assertSee('Rp 50.000')
         ->assertSee('Rp 60.000')

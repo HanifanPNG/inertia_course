@@ -15,6 +15,7 @@
 
     --font-slip: 'Archivo', ui-sans-serif, system-ui, sans-serif;
     --font-data: 'Courier Prime', ui-monospace, SFMono-Regular, monospace;
+    --font-brand: 'Playwrite AR', 'Segoe Script', cursive;
 
     --radius-lg: var(--radius);
     --radius-md: calc(var(--radius) - 2px);
@@ -228,6 +229,52 @@
 .bon-world [data-slot='sidebar-menu-button'][data-active='true'] {
     background-color: var(--primary);
     color: var(--primary-foreground);
+}
+
+/*
+ * The store name is written by hand: Playwrite AR is thin, small, and never
+ * uppercased, so it is sized here once instead of guessed at every call site.
+ */
+.bon-brand {
+    font-family: var(--font-brand);
+    font-size: 1.15rem;
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: 0.01em;
+}
+
+.bon-brand-lg {
+    font-size: 1.45rem;
+    line-height: 1.15;
+}
+
+/*
+ * The revenue bars rise from the rule like a column being totalled, one bar
+ * after another. Motion is decoration here, so it is short and it is skipped
+ * for anyone who asked the system for less of it.
+ */
+@keyframes bon-bar-rise {
+    from {
+        transform: scaleY(0);
+    }
+
+    to {
+        transform: scaleY(1);
+    }
+}
+
+.bon-bars {
+    /* fill-box makes every bar grow from its own baseline, not the chart's */
+    transform-box: fill-box;
+    transform-origin: bottom;
+    animation: bon-bar-rise 480ms cubic-bezier(0.22, 0.61, 0.36, 1) backwards;
+    animation-delay: calc(var(--bon-bar-index, 0) * 45ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bon-bars {
+        animation: none;
+    }
 }
 
 .bon-rule {

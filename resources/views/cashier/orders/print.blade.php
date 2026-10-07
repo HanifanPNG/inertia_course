@@ -18,6 +18,14 @@
                 --rule: #000;
             }
 
+            @font-face {
+                font-family: 'Playwrite AR';
+                src: url('/fonts/playwrite-ar-400.woff2') format('woff2');
+                font-weight: 400;
+                font-style: normal;
+                font-display: swap;
+            }
+
             * {
                 box-sizing: border-box;
             }
@@ -62,11 +70,10 @@
             }
 
             .store {
-                font-size: 15px;
-                font-weight: 700;
-                letter-spacing: 0.08em;
+                font-family: 'Playwrite AR', 'Segoe Script', cursive;
+                font-size: 20px;
+                line-height: 1.25;
                 text-align: center;
-                text-transform: uppercase;
             }
 
             .kind {

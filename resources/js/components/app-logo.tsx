@@ -1,20 +1,13 @@
 import { usePage } from '@inertiajs/react';
 
-import AppLogoIcon from '@/components/app-logo-icon';
-
+/**
+ * The store identity in the sidebar: a name written by hand, nothing else.
+ *
+ * The Laravel mark that used to sit next to it was not our brand, so it is
+ * gone; the brand lives in the name and in the paper world around it.
+ */
 export default function AppLogo() {
     const { name } = usePage().props;
 
-    return (
-        <>
-            <div className="flex aspect-square size-8 items-center justify-center rounded-none bg-sidebar-primary text-sidebar-primary-foreground">
-                <AppLogoIcon className="size-5 fill-current text-white dark:text-black" />
-            </div>
-            <div className="ml-1 grid flex-1 text-left text-sm">
-                <span className="mb-0.5 truncate text-[13px] leading-tight font-semibold tracking-[0.18em] uppercase">
-                    {name}
-                </span>
-            </div>
-        </>
-    );
+    return <span className="bon-brand truncate">{name}</span>;
 }

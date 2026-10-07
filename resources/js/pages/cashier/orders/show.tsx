@@ -103,7 +103,7 @@ export default function OrderShow({ order }: { order: OrderDetail }) {
 
                 <div className="max-w-xl border border-border bg-card p-6">
                     <div className="space-y-1 text-center">
-                        <p className="text-sm font-medium uppercase">{name}</p>
+                        <p className="bon-brand bon-brand-lg">{name}</p>
                         <p className="text-xs text-muted-foreground">
                             Struk transaksi
                         </p>

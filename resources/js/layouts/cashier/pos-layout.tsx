@@ -27,10 +27,7 @@ export default function PosLayout({ children }: { children: React.ReactNode }) {
     return (
         <div className="bon-world flex min-h-svh flex-col font-slip">
             <header className="flex flex-wrap items-center gap-x-4 gap-y-2 bg-foreground px-4 py-2.5 text-background md:px-6">
-                <Link
-                    href={cashierDashboard()}
-                    className="text-[13px] font-semibold tracking-[0.2em] uppercase"
-                >
+                <Link href={cashierDashboard()} className="bon-brand">
                     {name}
                 </Link>
 

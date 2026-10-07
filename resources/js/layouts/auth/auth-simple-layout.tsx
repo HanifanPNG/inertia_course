@@ -51,7 +51,7 @@ export default function AuthSimpleLayout({
                 <div className="flex min-w-0 flex-1 items-baseline gap-3">
                     <Link
                         href={home()}
-                        className="min-w-0 truncate text-[13px] font-semibold tracking-[0.2em] uppercase decoration-2 underline-offset-[6px] hover:underline"
+                        className="bon-brand bon-brand-lg min-w-0 truncate decoration-1 underline-offset-[6px] hover:underline"
                     >
                         {name}
                     </Link>
@@ -107,7 +107,7 @@ export default function AuthSimpleLayout({
             </main>
 
             <footer className="relative flex items-center justify-between gap-4 border-t border-border bg-background px-5 py-3 font-data text-[11px] tracking-[0.16em] text-muted-foreground md:px-10">
-                <span className="uppercase">{name}</span>
+                <span className="bon-brand text-[0.95rem]">{name}</span>
                 <span className="text-right">JAGA KATA SANDI ANDA</span>
             </footer>
         </div>
