@@ -33,6 +33,7 @@ export default function AuthSimpleLayout({
     children,
     title,
     description,
+    aside,
 }: AuthLayoutProps) {
     const { name } = usePage().props;
     const { iso, serial, label, weekday } = stampDate();
@@ -65,45 +66,94 @@ export default function AuthSimpleLayout({
                 </span>
             </header>
 
-            <main className="relative flex flex-1 items-center justify-center px-5 py-10 sm:px-8 md:justify-start md:pl-16 lg:pl-24">
-                <div className="w-full max-w-[29rem]">
-                    <div className="flex flex-wrap items-start justify-between gap-x-5 gap-y-5">
-                        <div className="min-w-0 flex-1 basis-64">
-                            <h1 className="text-[1.7rem] leading-[1.1] font-semibold tracking-[-0.02em] sm:text-[1.9rem]">
-                                {title}
-                            </h1>
-                            <p className="mt-3 max-w-[44ch] text-[0.95rem] leading-relaxed text-muted-foreground">
-                                {description}
-                            </p>
+            <main className="relative flex flex-1 items-center px-5 py-8 sm:px-8 md:pl-16 lg:pl-24">
+                {aside ? (
+                    <div className="mx-auto grid w-full max-w-5xl items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,29rem)]">
+                        <div className="order-2 lg:order-1">{aside}</div>
+
+                        <div className="order-1 w-full max-w-[29rem] lg:order-2 lg:mx-auto">
+                            <div className="flex flex-wrap items-start justify-between gap-x-5 gap-y-5">
+                                <div className="min-w-0 flex-1 basis-64">
+                                    <h1 className="text-[1.7rem] leading-[1.1] font-semibold tracking-[-0.02em] sm:text-[1.9rem]">
+                                        {title}
+                                    </h1>
+                                    <p className="mt-3 max-w-[44ch] text-[0.95rem] leading-relaxed text-muted-foreground">
+                                        {description}
+                                    </p>
+                                </div>
+
+                                <div className="bon-stamp relative z-10 shrink-0 border-2 border-primary/85 px-2 py-1.5 text-center text-primary sm:translate-y-10">
+                                    <span className="block border border-primary/45 px-2 py-1.5">
+                                        <time
+                                            dateTime={iso}
+                                            className="block font-data text-[0.95rem] leading-none font-bold tracking-[0.06em]"
+                                        >
+                                            {label}
+                                        </time>
+                                        <span className="mt-2 block font-data text-[0.56rem] leading-none tracking-[0.3em]">
+                                            TANGGAL
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div aria-hidden="true" className="mt-6">
+                                <div className="h-[2px] bg-foreground/85" />
+                                <div className="mt-[3px] h-px bg-foreground/30" />
+                            </div>
+
+                            <div className="mt-4 flex items-baseline justify-between gap-3 font-data text-[11px] tracking-[0.18em] text-[#2b4a8b]">
+                                <span>NO. {serial}</span>
+                                <span className="text-muted-foreground">
+                                    {weekday}
+                                </span>
+                            </div>
+
+                            <div className="mt-5">{children}</div>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="mx-auto w-full max-w-[29rem]">
+                        <div className="flex flex-wrap items-start justify-between gap-x-5 gap-y-5">
+                            <div className="min-w-0 flex-1 basis-64">
+                                <h1 className="text-[1.7rem] leading-[1.1] font-semibold tracking-[-0.02em] sm:text-[1.9rem]">
+                                    {title}
+                                </h1>
+                                <p className="mt-3 max-w-[44ch] text-[0.95rem] leading-relaxed text-muted-foreground">
+                                    {description}
+                                </p>
+                            </div>
+
+                            <div className="bon-stamp relative z-10 shrink-0 border-2 border-primary/85 px-2 py-1.5 text-center text-primary sm:translate-y-10">
+                                <span className="block border border-primary/45 px-2 py-1.5">
+                                    <time
+                                        dateTime={iso}
+                                        className="block font-data text-[0.95rem] leading-none font-bold tracking-[0.06em]"
+                                    >
+                                        {label}
+                                    </time>
+                                    <span className="mt-2 block font-data text-[0.56rem] leading-none tracking-[0.3em]">
+                                        TANGGAL
+                                    </span>
+                                </span>
+                            </div>
                         </div>
 
-                        <div className="bon-stamp relative z-10 shrink-0 border-2 border-primary/85 px-2 py-1.5 text-center text-primary sm:translate-y-10">
-                            <span className="block border border-primary/45 px-2 py-1.5">
-                                <time
-                                    dateTime={iso}
-                                    className="block font-data text-[0.95rem] leading-none font-bold tracking-[0.06em]"
-                                >
-                                    {label}
-                                </time>
-                                <span className="mt-2 block font-data text-[0.56rem] leading-none tracking-[0.3em]">
-                                    TANGGAL
-                                </span>
+                        <div aria-hidden="true" className="mt-6">
+                            <div className="h-[2px] bg-foreground/85" />
+                            <div className="mt-[3px] h-px bg-foreground/30" />
+                        </div>
+
+                        <div className="mt-4 flex items-baseline justify-between gap-3 font-data text-[11px] tracking-[0.18em] text-[#2b4a8b]">
+                            <span>NO. {serial}</span>
+                            <span className="text-muted-foreground">
+                                {weekday}
                             </span>
                         </div>
-                    </div>
 
-                    <div aria-hidden="true" className="mt-6">
-                        <div className="h-[2px] bg-foreground/85" />
-                        <div className="mt-[3px] h-px bg-foreground/30" />
+                        <div className="mt-5">{children}</div>
                     </div>
-
-                    <div className="mt-4 flex items-baseline justify-between gap-3 font-data text-[11px] tracking-[0.18em] text-[#2b4a8b]">
-                        <span>NO. {serial}</span>
-                        <span className="text-muted-foreground">{weekday}</span>
-                    </div>
-
-                    <div className="mt-5">{children}</div>
-                </div>
+                )}
             </main>
 
             <footer className="relative flex items-center justify-between gap-4 border-t border-border bg-background px-5 py-3 font-data text-[11px] tracking-[0.16em] text-muted-foreground md:px-10">

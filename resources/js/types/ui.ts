@@ -18,4 +18,9 @@ export type AuthLayoutProps = {
     name?: string;
     title?: string;
     description?: string;
+    /**
+     * A panel shown beside the form on wide screens and under it on narrow
+     * ones, so a page can carry one image without the layout owning it.
+     */
+    aside?: ReactNode;
 };

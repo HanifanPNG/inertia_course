@@ -1,4 +1,5 @@
 import { Form, Head } from '@inertiajs/react';
+import CafeAside from '@/components/cafe-aside';
 import PasskeyVerify from '@/components/passkey-verify';
 import InputError from '@/components/input-error';
 import PasswordInput from '@/components/password-input';
@@ -169,4 +170,5 @@ Login.layout = {
     title: 'Masuk ke akun Anda',
     description:
         'Masukkan email dan kata sandi Anda untuk melanjutkan pekerjaan hari ini.',
+    aside: <CafeAside />,
 };

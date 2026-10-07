@@ -13,8 +13,9 @@ export default defineConfig({
             input: ['resources/css/app.css', 'resources/js/app.tsx'],
             refresh: true,
             fonts: [
+                // only the fallback face: every screen sets the world font
                 bunny('Instrument Sans', {
-                    weights: [400, 500, 600],
+                    weights: [400],
                 }),
                 bunny('Archivo', {
                     weights: [400, 500, 600, 700],
@@ -28,7 +29,7 @@ export default defineConfig({
                  * amounts or interface text.
                  */
                 bunny('Playwrite AR', {
-                    weights: [300, 400],
+                    weights: [400],
                 }),
             ],
         }),
