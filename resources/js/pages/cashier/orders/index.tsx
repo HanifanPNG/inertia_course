@@ -3,7 +3,8 @@ import { Printer } from 'lucide-react';
 import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { formatCurrency } from '@/lib/format';
+import { formatAmount } from '@/lib/format';
+import PosLayout from '@/layouts/cashier/pos-layout';
 import {
     create,
     index,
@@ -76,7 +77,7 @@ export default function OrdersIndex({
                                     name="order_date"
                                     type="date"
                                     defaultValue={filters.order_date ?? ''}
-                                    className="h-9 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                                    className="h-9 rounded-none border border-input bg-card px-3 font-data text-[13px] outline-none focus-visible:border-primary"
                                 />
                             </div>
 
@@ -105,9 +106,9 @@ export default function OrdersIndex({
                         .
                     </p>
                 ) : (
-                    <div className="overflow-x-auto rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
+                    <div className="overflow-x-auto border border-border">
                         <table className="w-full text-left text-sm">
-                            <thead className="border-b border-sidebar-border/70 text-xs text-muted-foreground dark:border-sidebar-border">
+                            <thead className="border-b border-foreground/25 font-data text-[10.5px] tracking-[0.2em] text-muted-foreground uppercase">
                                 <tr>
                                     <th className="px-4 py-3 font-medium">
                                         Nomor
@@ -134,7 +135,10 @@ export default function OrdersIndex({
                             </thead>
                             <tbody className="divide-y divide-sidebar-border/70 dark:divide-sidebar-border">
                                 {orders.map((order) => (
-                                    <tr key={order.id}>
+                                    <tr
+                                        key={order.id}
+                                        className="border-b border-border last:border-b-0"
+                                    >
                                         <td className="px-4 py-3">
                                             <Link
                                                 href={show({
@@ -145,17 +149,18 @@ export default function OrdersIndex({
                                                 #{order.order_number}
                                             </Link>
                                         </td>
-                                        <td className="px-4 py-3 text-muted-foreground">
+                                        <td className="px-4 py-3 font-data text-[13px] text-muted-foreground tabular-nums">
                                             {order.order_date}
                                         </td>
-                                        <td className="px-4 py-3 text-muted-foreground">
+                                        <td className="px-4 py-3 text-right font-data text-[13px] text-muted-foreground tabular-nums">
                                             {order.items_count}
                                         </td>
                                         <td className="px-4 py-3 text-muted-foreground">
                                             {order.user.name}
                                         </td>
-                                        <td className="px-4 py-3">
-                                            {formatCurrency(order.total_amount)}
+                                        <td className="px-4 py-3 text-right font-data text-[13px] tabular-nums">
+                                            Rp{' '}
+                                            {formatAmount(order.total_amount)}
                                         </td>
                                         <td className="px-4 py-3">
                                             <Badge
@@ -199,11 +204,4 @@ export default function OrdersIndex({
     );
 }
 
-OrdersIndex.layout = {
-    breadcrumbs: [
-        {
-            title: 'Transaksi',
-            href: index(),
-        },
-    ],
-};
+OrdersIndex.layout = (page: React.ReactNode) => <PosLayout>{page}</PosLayout>;

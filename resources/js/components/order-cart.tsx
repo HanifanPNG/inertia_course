@@ -2,6 +2,7 @@ import { useState, type ReactNode } from 'react';
 import { Form, Link } from '@inertiajs/react';
 import { ShoppingCart } from 'lucide-react';
 import MenuGrid, {
+    orderedCategories,
     type MenuCategory,
     type MenuProduct,
 } from '@/components/menu-grid';
@@ -30,6 +31,9 @@ export default function OrderCart({
     children: (state: { processing: boolean }) => ReactNode;
 }) {
     const [lines, setLines] = useState<OrderLine[]>(initialLines);
+    const [categoryId, setCategoryId] = useState<number | null>(
+        () => orderedCategories(menu)[0]?.id ?? null,
+    );
 
     const addProduct = (product: MenuProduct) => {
         setLines((current) => {
@@ -82,6 +86,8 @@ export default function OrderCart({
                 <>
                     <MenuGrid
                         menu={menu}
+                        activeCategoryId={categoryId}
+                        onCategoryChange={setCategoryId}
                         quantityFor={quantityFor}
                         onAdd={addProduct}
                         onRemove={removeProduct}

@@ -6,6 +6,7 @@ import OrderCart, {
     type OrderLine,
 } from '@/components/order-cart';
 import { Button } from '@/components/ui/button';
+import PosLayout from '@/layouts/cashier/pos-layout';
 import { index } from '@/routes/cashier/orders';
 
 export type EditableOrder = {
@@ -65,9 +66,4 @@ export default function OrderEdit({
     );
 }
 
-OrderEdit.layout = {
-    breadcrumbs: [
-        { title: 'Transaksi', href: index() },
-        { title: 'Ubah', href: index() },
-    ],
-};
+OrderEdit.layout = (page: React.ReactNode) => <PosLayout>{page}</PosLayout>;

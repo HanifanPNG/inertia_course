@@ -8,6 +8,6 @@ export function formatCurrency(value: string | number): string {
 
 export function formatAmount(value: string | number): string {
     return new Intl.NumberFormat('id-ID', {
-        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
     }).format(Number(value));
 }

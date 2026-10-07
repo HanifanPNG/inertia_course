@@ -14,7 +14,8 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
-import { formatCurrency } from '@/lib/format';
+import { formatAmount } from '@/lib/format';
+import PosLayout from '@/layouts/cashier/pos-layout';
 import { edit, index, print as printStruk } from '@/routes/cashier/orders';
 
 export type OrderDetail = {
@@ -100,7 +101,7 @@ export default function OrderShow({ order }: { order: OrderDetail }) {
                     </div>
                 </div>
 
-                <div className="max-w-xl rounded-xl border border-sidebar-border/70 p-6 dark:border-sidebar-border">
+                <div className="max-w-xl border border-border bg-card p-6">
                     <div className="space-y-1 text-center">
                         <p className="text-sm font-medium uppercase">{name}</p>
                         <p className="text-xs text-muted-foreground">
@@ -108,18 +109,20 @@ export default function OrderShow({ order }: { order: OrderDetail }) {
                         </p>
                     </div>
 
-                    <hr className="my-4 border-dashed border-sidebar-border dark:border-sidebar-border" />
+                    <hr className="my-4 border-dashed border-border" />
 
                     <div className="flex items-center justify-between text-sm">
                         <span>Nomor Pesanan</span>
-                        <span className="text-lg font-bold">
+                        <span className="font-data text-lg font-bold tabular-nums">
                             #{order.order_number}
                         </span>
                     </div>
 
                     <div className="flex items-center justify-between text-sm text-muted-foreground">
                         <span>Tanggal</span>
-                        <span>{order.order_date}</span>
+                        <span className="font-data text-[13px] tabular-nums">
+                            {order.order_date}
+                        </span>
                     </div>
 
                     <div className="flex items-center justify-between text-sm text-muted-foreground">
@@ -132,7 +135,7 @@ export default function OrderShow({ order }: { order: OrderDetail }) {
                         <span>{order.client_name || '-'}</span>
                     </div>
 
-                    <hr className="my-4 border-dashed border-sidebar-border dark:border-sidebar-border" />
+                    <hr className="my-4 border-dashed border-border" />
 
                     <div className="space-y-2">
                         {order.items.map((item, itemIndex) => (
@@ -144,21 +147,25 @@ export default function OrderShow({ order }: { order: OrderDetail }) {
                                     {item.product_name} x{item.quantity}
                                 </span>
 
-                                <span className="font-medium">
-                                    {formatCurrency(item.subtotal)}
+                                <span className="font-data tabular-nums">
+                                    {formatAmount(item.subtotal)}
                                 </span>
                             </div>
                         ))}
                     </div>
 
-                    <hr className="my-4 border-dashed border-sidebar-border dark:border-sidebar-border" />
+                    <hr className="my-4 border-dashed border-border" />
 
-                    <div className="flex items-center justify-between text-base font-semibold">
-                        <span>TOTAL</span>
-                        <span>{formatCurrency(order.total_amount)}</span>
+                    <div className="flex items-baseline justify-between border-t-2 border-foreground/80 pt-3 text-base font-semibold">
+                        <span className="font-data text-[11px] tracking-[0.2em] uppercase">
+                            Total
+                        </span>
+                        <span className="font-data tabular-nums">
+                            Rp {formatAmount(order.total_amount)}
+                        </span>
                     </div>
 
-                    <hr className="my-4 border-dashed border-sidebar-border dark:border-sidebar-border" />
+                    <hr className="my-4 border-dashed border-border" />
 
                     <p className="text-center text-xs text-muted-foreground">
                         Terima kasih!
@@ -229,9 +236,4 @@ function OrderDeleteDialog({ order }: { order: OrderDetail }) {
     );
 }
 
-OrderShow.layout = {
-    breadcrumbs: [
-        { title: 'Transaksi', href: index() },
-        { title: 'Detail', href: index() },
-    ],
-};
+OrderShow.layout = (page: React.ReactNode) => <PosLayout>{page}</PosLayout>;
