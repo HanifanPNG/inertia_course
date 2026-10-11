@@ -18,6 +18,20 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
 
+        // Di produksi, Caddy meng-terminate TLS lalu meneruskan HTTP ke
+        // container nginx, yang ada di 127.0.0.1:8000. Akibatnya PHP melihat
+        // request sebagai http sementara browser memakai https, sehingga url()
+        // menghasilkan http:// dan aset Vite diblokir Mixed Content.
+        // TRUST_PROXIES=true membuat Laravel mempercayai X-Forwarded-Proto
+        // dari Caddy. Tanpa reverse proxy, biarkan kosong.
+        //
+        // Nilai dibaca dari $_SERVER, bukan env() atau config(), karena config
+        // belum ter-resolve pada saat middleware ini didaftarkan, dan file
+        // .env tidak dimuat ketika config:cache aktif.
+        if (filter_var($_SERVER['TRUST_PROXIES'] ?? false, FILTER_VALIDATE_BOOLEAN)) {
+            $middleware->trustProxies(at: '*');
+        }
+
         $middleware->alias([
             'role' => RoleMiddleware::class,
         ]);

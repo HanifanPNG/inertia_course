@@ -1,0 +1,77 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: runtime
+    container_name: pos4u_app
+    restart: unless-stopped
+    env_file:
+      - .env.production
+    volumes:
+      - storage-data:/var/www/html/storage
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - pos4u-net
+    healthcheck:
+      test: ["CMD", "php", "artisan", "about", "--only=environment"]
+      interval: 15s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  web:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: web
+    container_name: pos4u_web
+    restart: unless-stopped
+    ports:
+      # Hanya localhost: tidak bisa dijangkau dari internet.
+      # Di server produksi, akses lewat reverse proxy (Caddy) yang
+      # menangani HTTPS. Untuk tes cepat dari laptop:
+      #   ssh -L 8000:127.0.0.1:8000 user@server
+      - "127.0.0.1:8000:80"
+    depends_on:
+      app:
+        condition: service_healthy
+    volumes:
+      - storage-data:/var/www/html/storage:ro
+    networks:
+      - pos4u-net
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1/"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  db:
+    image: mysql:8.4
+    container_name: pos4u_db
+    restart: unless-stopped
+    # Kredensial TIDAK ditulis di sini, tapi dibaca dari .env.production
+    # (variabel MYSQL_* di file tersebut). File itu sudah masuk .gitignore.
+    env_file:
+      - .env.production
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - pos4u-net
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u\"$${MYSQL_USER}\" -p\"$${MYSQL_PASSWORD}\" --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+volumes:
+  db-data:
+  storage-data:
+
+networks:
+  pos4u-net:
+    driver: bridge
